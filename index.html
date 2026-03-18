@@ -142,7 +142,6 @@
   @keyframes dotB { 0%,60%,100% { transform:translateY(0); opacity:0.4; } 30% { transform:translateY(-5px); opacity:1; } }
   @media (max-width:520px) { body { padding:8px; } .box { height:calc(100vh - 80px); max-height:none; } .hdr h1 { font-size:1.5rem; } }
 </style>
-<script src="dermacol-config.js"></script>
 </head>
 <body>
 
@@ -174,7 +173,7 @@
 document.addEventListener("DOMContentLoaded", function() {
 
   var chatLog = [];
-  var apiKey = (typeof DERMACOL_CONFIG !== "undefined" && DERMACOL_CONFIG.apiKey) ? DERMACOL_CONFIG.apiKey : null;
+  // API key is stored securely on server side (Vercel env variable)
   var inTreeMode = false;
 
   var CATS = [
@@ -838,34 +837,22 @@ document.addEventListener("DOMContentLoaded", function() {
     return botReply("D\u00edky za dotaz! Mohu v\u00e1m poradit s v\u00fdb\u011brem make-upu, p\u00e9\u010d\u00ed o ple\u0165, rt\u011bnkami a dal\u0161\u00edm. Zkuste mi popsat, co hled\u00e1te, nebo si prohl\u00e9dn\u011bte kategorie.", addActions);
   }
 
-  function callAI(msg, cb) {
-    if (!apiKey) { return cb(null); }
-    var sys = "Jsi ženská beauty poradkyně Dermacol – české kosmetické značky od 1966 z Barrandova. Pomáháš s výběrem kosmetiky a péčí o pleť. Mluv česky, přátelsky, v ženském rodě, max 3-4 věty. Vždy používej diakritiku.\n\nPRODUKTY: Máme 100+ produktů v těchto kategoriích: Make-up (Infinity, 5Day Stay, Caviar formule), Péče o tvář (BB krém, pleťové krémy, séra, masky), Péče o oči (různé typy očních krémů), Péče o rty (16H barvy, balzámy, rtěnky), Péče o nehty (barevné laky, péče), Parfémy, Péče o tělo, Sprcha a koupel, Dárková balíčka.\n\nCENOVÉ ŘADY:\n- Make-up: 99-399 CZK\n- Péče o tvář: 69-499 CZK\n- Péče o oči: 99-299 CZK\n- Péče o rty: 69-249 CZK\n- Nehty: 75-199 CZK\n- Parfémy: 199-999 CZK\n- Péče o tělo: 49-399 CZK\n\nDOPORUČENÍ PODLE TYPU PLETI:\n- MASTNÁ PLEŤ: Lehké formule, matující pudry, čistící gely bez olejů\n- SUCHÁ PLEŤ: Hydratační formule s kyselinou hyaluronovou, bohaté krémy\n- CITLIVÁ PLEŤ: Zklidňující formule bez dráždivých látek\n- ZRALÁ PLEŤ: Anti-age formule s kolagénem, liftingové efekty\n- KOMBINOVANÁ PLEŤ: Vyvážené formule pro různé zóny\n\nDOPRAVA: Zásilkovna, DPD (2-3 dny), volná od 500 CZK\nVRÁCENÍ: 14 dní, bezplatné (reklamace@dermacol.cz)\nPLATBA: Karty, transfer, dobírka, PayPal\n\nVždy doporučuj konkrétní produkty s cenou. Odpověz česky s diakritikou. Buď vřelá a ochotná.";
-    chatLog.push({role: "user", content: msg});
+  var AI_SYS = "Jsi \u017eensk\u00e1 beauty poradkyn\u011b Dermacol \u2013 \u010desk\u00e9 kosmetick\u00e9 zna\u010dky od 1966 z Barrandova. Pom\u00e1h\u00e1\u0161 s v\u00fdb\u011brem kosmetiky a p\u00e9\u010d\u00ed o ple\u0165. Mluv \u010desky, p\u0159\u00e1telsky, v \u017eensk\u00e9m rod\u011b (na\u0161la jsem, doporu\u010dila bych), max 3-4 v\u011bty. V\u017edy pou\u017e\u00edvej diakritiku.\n\nO DERMACOL: Legend\u00e1rn\u00ed \u010desk\u00e1 zna\u010dka zalo\u017een\u00e1 1966 ve filmov\u00fdch studi\u00edch Barrandov. P\u0159\u00edtomna v 58 zem\u00edch. Hypoalergenn\u00ed, klinicky testov\u00e1no, cruelty-free. V\u00fdroba v Brn\u011b.\n\nSORTIMENT (850 produkt\u016f):\n- MAKE-UPY (69 produkt\u016f, 99-399 K\u010d): Make-up Cover (bestseller, SPF30, 369 K\u010d), Collagen Make-up (anti-age, 299 K\u010d), Hyaluron Make-up (hydratace, 249 K\u010d), Caviar Long Stay (luxusn\u00ed, 299 K\u010d), AcneCover (problematick\u00e1 ple\u0165, 199 K\u010d), Infinity 2v1 (349 K\u010d), Skin Tint ty\u010dinka (299 K\u010d)\n- BB KR\u00c9MY (11, 119-299 K\u010d): BB kr\u00e9m s CBD (citliv\u00e1 ple\u0165, 124 K\u010d)\n- PUDRY (24, 99-299 K\u010d), TV\u00c1\u0158ENKY (21, 99-349 K\u010d), KOREKTORY (22, 79-249 K\u010d)\n- \u0158ASENKY (28, 99-299 K\u010d): Volume Mania, Mega Lashes, Imperial\n- O\u010cN\u00cd ST\u00cdNY (24, 69-399 K\u010d), LINKY (45, 69-199 K\u010d), OBO\u010c\u00cd (24, 79-199 K\u010d)\n- RT\u011aNKY (63, 99-349 K\u010d): 16H barva 2v1 (249 K\u010d, bestseller)\n- LESKY NA RTY (42, 69-249 K\u010d), BALZ\u00c1MY (7, 69-149 K\u010d)\n- LAKY NA NEHTY (74, 55-149 K\u010d)\n- PLE\u0164OV\u00c9 KR\u00c9MY (28, 149-499 K\u010d): denn\u00ed, no\u010dn\u00ed, o\u010dn\u00ed\n- S\u00c9RA (10, 149-299 K\u010d), MASKY (19, 59-149 K\u010d)\n- \u010cI\u0160T\u011aN\u00cd (18, 89-199 K\u010d): gely, ml\u00e9ka, micel\u00e1rn\u00ed vody\n- T\u011aLO (95, 39-399 K\u010d): kr\u00e9my, sprchov\u00e9 gely, p\u011bny\n- VLASY (13, 99-249 K\u010d): \u0161ampony, kondicion\u00e9ry, masky\n- PARF\u00c9MY (49, 99-999 K\u010d): d\u00e1msk\u00e9 i p\u00e1nsk\u00e9\n- D\u00c1RKOV\u00c9 BAL\u00cd\u010cKY (31, 149-599 K\u010d)\n\nTYP PLETI:\n- MASTN\u00c1: AcneCover, lehk\u00e9 formule, matuj\u00edc\u00ed pudry, \u010distic\u00ed gely\n- SUCH\u00c1: Hyaluron Make-up, hydrata\u010dn\u00ed kr\u00e9my, bohat\u00e9 textury\n- CITLIV\u00c1: BB kr\u00e9m s CBD, zklidnuj\u00edc\u00ed \u0159ady, bez parf\u00e9mu\n- ZRAL\u00c1: Collagen Make-up, anti-age s\u00e9ra, liftingov\u00e9 kr\u00e9my\n- KOMBINOVAN\u00c1: vyv\u00e1\u017een\u00e9 formule, T-z\u00f3na matuj\u00edc\u00ed\n\nDOPRAVA: Z\u00e1silkovna/DPD, 2-3 dny, zdarma od 500 K\u010d\nPLATBA: Karty, p\u0159evod, dob\u00edrka, PayPal\nVR\u00c1CEN\u00cd: 14 dn\u016f (reklamace@dermacol.cz)\nE-SHOP: www.dermacol.cz\n\nV\u017edy doporu\u010duj konkr\u00e9tn\u00ed produkty s cenou. Bu\u010f vst\u0159\u00edcn\u00e1, v\u0159el\u00e1 a profesion\u00e1ln\u00ed.";
 
-    if (apiKey.indexOf("sk-ant-") === 0) {
-      fetch("https://api.anthropic.com/v1/messages", {
-        method: "POST",
-        headers: {"Content-Type": "application/json", "x-api-key": apiKey, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true"},
-        body: JSON.stringify({model: "claude-sonnet-4-20250514", max_tokens: 400, system: sys, messages: chatLog.slice(-10)})
-      }).then(function(r) { return r.json(); }).then(function(d) {
-        var t = (d.content && d.content[0]) ? d.content[0].text : null;
-        if (t) { chatLog.push({role: "assistant", content: t}); }
-        cb(t);
-      }).catch(function() { cb(null); });
-    } else if (apiKey.indexOf("sk-") === 0) {
-      fetch("https://api.openai.com/v1/chat/completions", {
-        method: "POST",
-        headers: {"Content-Type": "application/json", "Authorization": "Bearer " + apiKey},
-        body: JSON.stringify({model: "gpt-4o-mini", messages: [{role: "system", content: sys}].concat(chatLog.slice(-10)), max_tokens: 400, temperature: 0.7})
-      }).then(function(r) { return r.json(); }).then(function(d) {
-        var t = (d.choices && d.choices[0]) ? d.choices[0].message.content : null;
-        if (t) { chatLog.push({role: "assistant", content: t}); }
-        cb(t);
-      }).catch(function() { cb(null); });
-    } else {
-      cb(null);
-    }
+  function callAI(msg, cb) {
+    chatLog.push({role: "user", content: msg});
+    fetch("/api/chat", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({model: "claude-sonnet-4-20250514", max_tokens: 400, system: AI_SYS, messages: chatLog.slice(-10)})
+    }).then(function(r) {
+      if (!r.ok) throw new Error("API error " + r.status);
+      return r.json();
+    }).then(function(d) {
+      var t = (d.content && d.content[0]) ? d.content[0].text : null;
+      if (t) { chatLog.push({role: "assistant", content: t}); }
+      cb(t);
+    }).catch(function() { cb(null); });
   }
 
   function send() {
