@@ -687,12 +687,23 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   }
 
+  function findById(id) {
+    for (var i = 0; i < PRODS.length; i++) { if (PRODS[i].id.indexOf(id) >= 0) return PRODS[i]; }
+    return null;
+  }
+  function findByCat(cat, limit) {
+    var r = [];
+    for (var i = 0; i < PRODS.length; i++) {
+      if (PRODS[i].c && PRODS[i].c.toLowerCase().indexOf(cat.toLowerCase()) >= 0) { r.push(PRODS[i]); if (limit && r.length >= limit) break; }
+    }
+    return r;
+  }
   function findProds(q) {
     q = q.toLowerCase();
     var result = [];
     for (var i = 0; i < PRODS.length; i++) {
       var p = PRODS[i];
-      var s = (p.n + " " + p.s + " " + p.d + " " + p.c + " " + (p.sk || "") + " " + p.t.join(" ")).toLowerCase();
+      var s = (p.n + " " + p.s + " " + (p.d || "") + " " + p.c + " " + (p.tc || "") + " " + (p.sk || "") + " " + (p.t ? p.t.join(" ") : "")).toLowerCase();
       var words = q.split(/\s+/);
       for (var w = 0; w < words.length; w++) {
         if (words[w].length > 2 && s.indexOf(words[w]) >= 0) {
@@ -708,6 +719,13 @@ document.addEventListener("DOMContentLoaded", function() {
     return s.replace(/[\-\s]+/g, "").replace(/\u00e1/g,"a").replace(/\u010d/g,"c").replace(/\u010f/g,"d").replace(/\u00e9/g,"e").replace(/\u011b/g,"e").replace(/\u00ed/g,"i").replace(/\u0148/g,"n").replace(/\u00f3/g,"o").replace(/\u0159/g,"r").replace(/\u0161/g,"s").replace(/\u0165/g,"t").replace(/\u00fa/g,"u").replace(/\u016f/g,"u").replace(/\u00fd/g,"y").replace(/\u017e/g,"z");
   }
 
+  function addSkinBtns(b) {
+    var acts = document.createElement("div"); acts.className = "acts";
+    var st = [["Mastn\u00e1 ple\u0165","mastn\u00e1 ple\u0165"],["Such\u00e1 ple\u0165","such\u00e1 ple\u0165"],["Zral\u00e1 ple\u0165","zral\u00e1 ple\u0165"],["Citliv\u00e1 ple\u0165","citliv\u00e1 ple\u0165"]];
+    for (var i = 0; i < st.length; i++) { (function(x) { var btn = document.createElement("button"); btn.className = "abtn"; btn.textContent = x[0]; btn.addEventListener("click", function() { addUsr(x[0]); processInput(x[1]); }); acts.appendChild(btn); })(st[i]); }
+    b.appendChild(acts);
+  }
+
   function processInput(q) {
     var ql = q.toLowerCase().trim();
     var qn = normalize(ql);
@@ -715,50 +733,58 @@ document.addEventListener("DOMContentLoaded", function() {
     if (/^(ahoj|cau|\u010dau|dobr|zdravim|zdrav\u00edm|hej|hi|hello)/.test(ql))
       return botReply("Ahoj! Jsem va\u0161e beauty poradkyn\u011b **Dermacol**. Jak v\u00e1m mohu pomoci?", addActions);
 
-    if (/make.?up.*cover|kryc|cover/.test(ql))
-      return botReply("N\u00e1\u0161 legend\u00e1rn\u00ed **Make-up Cover** je absolutn\u00ed bestseller! Vznikl v roce 1969 ve filmov\u00fdch studi\u00edch Barrandov. Je vod\u011bodolný s extr\u00e9mn\u00edm kryt\u00edm \u2013 zakryje i tetov\u00e1n\u00ed. M\u00e1 SPF 30 a 17 odst\u00edn\u016f.", function(b) { addProduct(b, PRODS[0]); addTip(b, "Beauty tip", "Pro nejlep\u0161\u00ed v\u00fdsledek naneste houbi\u010dkou v tenk\u00fdch vrstv\u00e1ch."); });
+    if (/make.?up.*cover|kryc|cover/.test(ql)) {
+      var mc = findById("make-up-cover");
+      return botReply("N\u00e1\u0161 legend\u00e1rn\u00ed **Make-up Cover** je absolutn\u00ed bestseller! Vznikl v roce 1969 ve filmov\u00fdch studi\u00edch Barrandov. Vod\u011bodolný s extr\u00e9mn\u00edm kryt\u00edm \u2013 zakryje i tetov\u00e1n\u00ed. SPF 30.", function(b) { if (mc) addProduct(b, mc); addTip(b, "Beauty tip", "Pro nejlep\u0161\u00ed v\u00fdsledek naneste houbi\u010dkou v tenk\u00fdch vrstv\u00e1ch."); });
+    }
+
+    if (/svat|svatebn|ples|ve\u010de|gala|b\u00e1l|slavnost|maturitn/.test(ql)) {
+      var sv1 = findById("make-up-cover") || findByCat("Make-upy", 1)[0];
+      var sv2 = findById("16h-lip") || findByCat("Rt\u011bnky", 1)[0];
+      return botReply("Pro **slavnostn\u00ed p\u0159\u00edle\u017eitost** doporu\u010duji vod\u011bodolné produkty, kter\u00e9 vydr\u017e\u00ed cel\u00fd den:", function(b) { if (sv1) addProduct(b, sv1); if (sv2) addProduct(b, sv2); addTip(b, "Slavnostn\u00ed l\u00ed\u010den\u00ed", "Make-up Cover je vod\u011bodolný a vydr\u017e\u00ed cel\u00fd den. Nezapome\u0148te na fixaci!"); });
+    }
 
     if (/make.?up|makeup|l\u00ed\u010den|licen|foundation|podklad/.test(ql) || /potrebuj.*makeup|chci.*makeup|hledam.*makeup/.test(qn))
-      return botReply("R\u00e1da v\u00e1m porad\u00edm s v\u00fdb\u011brem make-upu! M\u00e1me n\u011bkolik typ\u016f podle va\u0161ich pot\u0159eb. Jak\u00fd typ pleti m\u00e1te?", function(b) {
-        var makeups = [];
-        for (var i = 0; i < PRODS.length; i++) { if (PRODS[i].c === "make-upy") makeups.push(PRODS[i]); }
-        for (var j = 0; j < Math.min(makeups.length, 4); j++) { addProduct(b, makeups[j]); }
-        var acts = document.createElement("div"); acts.className = "acts";
-        var skinTypes = [["Mastn\u00e1 ple\u0165","mastn\u00e1 ple\u0165"],["Such\u00e1 ple\u0165","such\u00e1 ple\u0165"],["Zral\u00e1 ple\u0165","zral\u00e1 ple\u0165"],["Citliv\u00e1 ple\u0165","citliv\u00e1 ple\u0165"]];
-        for (var k = 0; k < skinTypes.length; k++) {
-          (function(x) { var btn = document.createElement("button"); btn.className = "abtn"; btn.textContent = x[0]; btn.addEventListener("click", function() { addUsr(x[0]); processInput(x[1]); }); acts.appendChild(btn); })(skinTypes[k]);
-        }
-        b.appendChild(acts);
+      return botReply("R\u00e1da v\u00e1m porad\u00edm s v\u00fdb\u011brem make-upu! M\u00e1me n\u011bkolik typ\u016f podle va\u0161ich pot\u0159eb:", function(b) {
+        var makeups = findByCat("Make-upy", 3);
+        for (var j = 0; j < makeups.length; j++) { addProduct(b, makeups[j]); }
+        addSkinBtns(b);
       });
 
-    if (/mastn|lesk|p\u00f3ry|akn[eé]|aknoz/.test(ql))
-      return botReply("Pro **mastnou ple\u0165** doporu\u010duji lehk\u00e9 formule, kter\u00e9 nekomplikuj\u00ed situaci s p\u00f3ry:", function(b) { addProduct(b, PRODS[5]); addProduct(b, PRODS[6]); addTip(b, "P\u00e9\u010de o mastnou ple\u0165", "Pou\u017e\u00edvejte lehk\u00e9 make-upy a matuj\u00edc\u00ed pudry. \u010cist\u011bte gely, ne ml\u00e9ky."); });
+    if (/mastn|lesk|p\u00f3ry|akn[eé]|aknoz/.test(ql)) {
+      var ac = findById("acnecover") || findById("acneclear");
+      var bb = findById("bb-cream") || findById("bb-krem");
+      return botReply("Pro **mastnou ple\u0165** a akn\u00e9 doporu\u010duji lehk\u00e9 formule, kter\u00e9 nekomplikuj\u00ed situaci s p\u00f3ry:", function(b) { if (ac) addProduct(b, ac); if (bb) addProduct(b, bb); var pudr = findByCat("Pudry", 1); if (pudr.length) addProduct(b, pudr[0]); addTip(b, "P\u00e9\u010de o mastnou ple\u0165", "Pou\u017e\u00edvejte lehk\u00e9 make-upy a matuj\u00edc\u00ed pudry. \u010cist\u011bte gely, ne ml\u00e9ky."); });
+    }
 
-    if (/such|hydrat|vysu\u0161en|vysusene/.test(ql))
-      return botReply("Pro **suchou ple\u0165** je kl\u00ed\u010dov\u00e1 hydratace. Tyto produkty obsahuj\u00ed slo\u017eky, kter\u00e9 dr\u017e\u00ed vlhkost v pleti:", function(b) { addProduct(b, PRODS[2]); addProduct(b, PRODS[1]); addTip(b, "P\u00e9\u010de o suchou ple\u0165", "Zvolte make-upy s kyselinou hyaluronovou a bohat\u00e9 kr\u00e9my."); });
+    if (/such|hydrat|vysu\u0161en|vysusene/.test(ql)) {
+      var hy = findById("hyaluron") || findByCat("Make-upy", 1)[0];
+      var dk = findByCat("Denn\u00ed kr\u00e9my", 1);
+      return botReply("Pro **suchou ple\u0165** je kl\u00ed\u010dov\u00e1 hydratace:", function(b) { if (hy) addProduct(b, hy); if (dk.length) addProduct(b, dk[0]); addTip(b, "P\u00e9\u010de o suchou ple\u0165", "Zvolte make-upy s kyselinou hyaluronovou a bohat\u00e9 kr\u00e9my."); });
+    }
 
-    if (/zral|vr\u00e1sk|anti.?age|st\u00e1rn|starn|omlazen/.test(ql))
-      return botReply("Pro **zralou ple\u0165** m\u00e1m anti-age produkty s kolagenem, kter\u00e9 pomalu vypl\u0148uj\u00ed vr\u00e1sky:", function(b) { addProduct(b, PRODS[1]); addTip(b, "Anti-age p\u00e9\u010de", "Kolagen a kyselina hyaluronov\u00e1 jsou z\u00e1klad. SPF ochrana je prevence!"); });
+    if (/zral|vr\u00e1sk|anti.?age|st\u00e1rn|starn|omlazen/.test(ql)) {
+      var col = findById("collagen") || findByCat("Make-upy", 1)[0];
+      return botReply("Pro **zralou ple\u0165** m\u00e1m anti-age produkty s kolagenem:", function(b) { if (col) addProduct(b, col); addTip(b, "Anti-age p\u00e9\u010de", "Kolagen a kyselina hyaluronov\u00e1 jsou z\u00e1klad. SPF ochrana je prevence!"); });
+    }
 
-    if (/citliv|alerg|podr\u00e1\u017ed|podrazden|zarudl|atopi/.test(ql))
-      return botReply("Pro **citlivou ple\u0165** doporu\u010duji zklid\u0148uj\u00edc\u00ed produkty. Na\u0161e \u0159ada s CBD olejem je p\u0159\u00edmo stvo\u0159en\u00e1 pro citlivou poko\u017eku:", function(b) { addProduct(b, PRODS[6]); addTip(b, "Citliv\u00e1 ple\u0165", "V\u0161echny produkty Dermacol jsou hypoalergenn\u00ed. Zkuste \u0159adu s CBD olejem."); });
+    if (/citliv|alerg|podr\u00e1\u017ed|podrazden|zarudl|atopi/.test(ql)) {
+      var cbd = findById("bb-cream-s-cbd") || findById("cbd");
+      return botReply("Pro **citlivou ple\u0165** doporu\u010duji zklid\u0148uj\u00edc\u00ed produkty:", function(b) { if (cbd) addProduct(b, cbd); addTip(b, "Citliv\u00e1 ple\u0165", "V\u0161echny produkty Dermacol jsou hypoalergenn\u00ed. Zkuste \u0159adu s CBD olejem."); });
+    }
 
     if (/ple\u0165|plet|skin|kozn|ko\u017en|poko\u017ek|typ pleti/.test(ql) && !/such|mastn|zral|citliv/.test(ql))
-      return botReply("R\u00e1da porad\u00edm s p\u00e9\u010d\u00ed o ple\u0165! Abych v\u00e1m doporu\u010dila to nejlep\u0161\u00ed, pot\u0159ebuji v\u011bd\u011bt v\u00e1\u0161 typ pleti:", function(b) {
-        var acts = document.createElement("div"); acts.className = "acts";
-        var st = [["Mastn\u00e1 ple\u0165","mastn\u00e1 ple\u0165"],["Such\u00e1 ple\u0165","such\u00e1 ple\u0165"],["Zral\u00e1 ple\u0165","zral\u00e1 ple\u0165"],["Citliv\u00e1 ple\u0165","citliv\u00e1 ple\u0165"]];
-        for (var i = 0; i < st.length; i++) { (function(x) { var btn = document.createElement("button"); btn.className = "abtn"; btn.textContent = x[0]; btn.addEventListener("click", function() { addUsr(x[0]); processInput(x[1]); }); acts.appendChild(btn); })(st[i]); }
-        b.appendChild(acts);
-      });
+      return botReply("R\u00e1da porad\u00edm s p\u00e9\u010d\u00ed o ple\u0165! Jak\u00fd typ pleti m\u00e1te?", addSkinBtns);
 
     if (/cen|kolik sto|stoj|k\u010d/.test(ql)) {
       var f = findProds(ql);
-      if (f.length > 0) return botReply("Tady jsou ceny:", function(b) { for (var i = 0; i < f.length; i++) { addProduct(b, f[i]); } });
-      return botReply("Ceny Dermacol se pohybuj\u00ed od **99 K\u010d** po **369 K\u010d**. Na\u0161e bestsellery:", function(b) { addProduct(b, PRODS[0]); addProduct(b, PRODS[2]); addProduct(b, PRODS[3]); });
+      if (f.length > 0) return botReply("Tady jsou ceny:", function(b) { for (var i = 0; i < Math.min(f.length, 5); i++) { addProduct(b, f[i]); } });
+      var best = findByCat("Make-upy", 2);
+      return botReply("Ceny Dermacol se pohybuj\u00ed od **20 K\u010d** (p\u011bny do koupele) po **1000 K\u010d** (parf\u00e9my). Na\u0161e bestsellery:", function(b) { for (var i = 0; i < best.length; i++) addProduct(b, best[i]); });
     }
 
     if (/doprav|doru\u010den|z\u00e1silk|objedn|eshop|poslat/.test(ql))
-      return botReply("**Doprava:** Expedice do 2 pracovn\u00edch dn\u016f. Doru\u010dujeme p\u0159es **Z\u00e1silkovnu** a **DPD**. Platba dob\u00edrkou, p\u0159evodem nebo kartou (VISA, Mastercard) se 3D-Secure.");
+      return botReply("**Doprava:** Expedice do 2 pracovn\u00edch dn\u016f. Doru\u010dujeme p\u0159es **Z\u00e1silkovnu** a **DPD**. Platba dob\u00edrkou, p\u0159evodem nebo kartou (VISA, Mastercard) se 3D-Secure. Nad 500 K\u010d je doprava zdarma!");
 
     if (/vr\u00e1tit|vr\u00e1cen|reklam|nespokoje|reklamac/.test(ql))
       return botReply("**Vr\u00e1cen\u00ed:** Do **14 dn\u016f**, neotev\u0159en\u00e9. **Reklamace:** reklamace@dermacol.cz \u2013 do 30 dn\u016f.");
@@ -772,54 +798,64 @@ document.addEventListener("DOMContentLoaded", function() {
     if (/slo\u017een|inci|ingredient|paraben/.test(ql))
       return botReply("Slo\u017een\u00ed (INCI) najdete u ka\u017ed\u00e9ho produktu na **dermacol.cz**. V\u0161echny produkty jsou hypoalergenn\u00ed a klinicky testovan\u00e9.");
 
-    if (/d\u00e1rek|d\u00e1rkov|narozenin|v\u00e1noce|poukaz|darcek|pro kamarad/.test(ql))
-      return botReply("M\u00e1me **d\u00e1rkov\u00e9 bal\u00ed\u010dky** a **poukazy** (500 K\u010d, 1000 K\u010d). Nejoblíben\u011bj\u0161\u00ed d\u00e1rek? **Make-up Cover** \u2013 nikdy nezklame!", function(b) { addProduct(b, PRODS[0]); });
+    if (/d\u00e1rek|d\u00e1rkov|narozenin|v\u00e1noce|poukaz|darcek|pro kamarad/.test(ql)) {
+      var gift = findById("make-up-cover") || findByCat("Make-upy", 1)[0];
+      var bal = findByCat("D\u00e1rkov", 1);
+      return botReply("M\u00e1me **d\u00e1rkov\u00e9 bal\u00ed\u010dky** a **poukazy** (500 K\u010d, 1000 K\u010d). Nejoblíben\u011bj\u0161\u00ed d\u00e1rek? **Make-up Cover** \u2013 nikdy nezklame!", function(b) { if (gift) addProduct(b, gift); if (bal.length) addProduct(b, bal[0]); });
+    }
 
-    if (/svat|svatebn|ples|ve\u010de|gala|b\u00e1l|slavnost|maturitn/.test(ql))
-      return botReply("Pro **slavnostn\u00ed p\u0159\u00edle\u017eitost** doporu\u010duji vod\u011bodolné produkty, kter\u00e9 vydr\u017e\u00ed cel\u00fd den:", function(b) { addProduct(b, PRODS[0]); addProduct(b, PRODS[7]); addTip(b, "Slavnostn\u00ed l\u00ed\u010den\u00ed", "Make-up Cover je vod\u011bodolný a vydr\u017e\u00ed cel\u00fd den. Nezapome\u0148te na fixaci!"); });
+    if (/\u0159asenk|mascara|rasenk/.test(ql)) {
+      var ras = findByCat("\u0158asenky", 3);
+      return botReply("Dermacol m\u00e1 \u0161irokou nab\u00eddku \u0159asenek \u2013 od objemov\u00fdch po vod\u011bodolné:", function(b) { for (var i = 0; i < ras.length; i++) addProduct(b, ras[i]); });
+    }
 
-    if (/\u0159asenk|mascara|rasenk/.test(ql))
-      return botReply("Dermacol m\u00e1 \u0161irokou nab\u00eddku \u0159asenek \u2013 od objemov\u00fdch po prodlu\u017eovac\u00ed a vod\u011bodolné. Celou kolekci najdete na **dermacol.cz**. Jak\u00fd efekt preferujete?");
-
-    if (/rt\u011bnk|lip|rtenk|barva na rty|lesk na rty/.test(ql))
-      return botReply("Rty jsou na\u0161e specialita! M\u00e1me dlouhotrvaj\u00edc\u00ed barvy i vy\u017eivuj\u00edc\u00ed oleje:", function(b) { addProduct(b, PRODS[3]); addProduct(b, PRODS[4]); });
+    if (/rt\u011bnk|lip|rtenk|barva na rty|lesk na rty/.test(ql)) {
+      var rty = findByCat("Rt\u011bnky", 2);
+      var lesk = findByCat("Lesky", 1);
+      return botReply("Rty jsou na\u0161e specialita! M\u00e1me dlouhotrvaj\u00edc\u00ed barvy i lesky:", function(b) { for (var i = 0; i < rty.length; i++) addProduct(b, rty[i]); if (lesk.length) addProduct(b, lesk[0]); });
+    }
 
     if (/kr\u00e9m|krem|sera|s\u00e9rum|maska|peeling|\u010di\u0161t\u011bn/.test(ql))
-      return botReply("V na\u0161em sortimentu naleznete celou \u0159adu p\u00e9\u010de o ple\u0165 \u2013 kr\u00e9my, s\u00e9ra, masky i peelingy. Abych v\u00e1m doporu\u010dila to prav\u00e9, jak\u00fd m\u00e1te typ pleti?", function(b) {
-        var acts = document.createElement("div"); acts.className = "acts";
-        var st = [["Mastn\u00e1 ple\u0165","mastn\u00e1 ple\u0165"],["Such\u00e1 ple\u0165","such\u00e1 ple\u0165"],["Zral\u00e1 ple\u0165","zral\u00e1 ple\u0165"],["Citliv\u00e1 ple\u0165","citliv\u00e1 ple\u0165"]];
-        for (var i = 0; i < st.length; i++) { (function(x) { var btn = document.createElement("button"); btn.className = "abtn"; btn.textContent = x[0]; btn.addEventListener("click", function() { addUsr(x[0]); processInput(x[1]); }); acts.appendChild(btn); })(st[i]); }
-        b.appendChild(acts);
-      });
+      return botReply("V na\u0161em sortimentu naleznete celou \u0159adu p\u00e9\u010de o ple\u0165. Abych v\u00e1m doporu\u010dila to prav\u00e9, jak\u00fd m\u00e1te typ pleti?", addSkinBtns);
 
-    if (/v\u016fn|parfem|parf\u00e9m|parfum|sv\u00ed\u010dk|difuz/.test(ql))
-      return botReply("D\u00e1msk\u00e9 i p\u00e1nsk\u00e9 parf\u00e9my, vonn\u00e9 sv\u00ed\u010dky a difuz\u00e9ry \u2013 to v\u0161e najdete v na\u0161\u00ed nab\u00eddce. Jak\u00fd typ v\u016fn\u011b preferujete \u2013 kv\u011btinov\u00fd, ovocn\u00fd, nebo d\u0159evit\u00fd?");
+    if (/v\u016fn|parfem|parf\u00e9m|parfum|sv\u00ed\u010dk|difuz/.test(ql)) {
+      var par = findByCat("parf", 2);
+      return botReply("D\u00e1msk\u00e9 i p\u00e1nsk\u00e9 parf\u00e9my, vonn\u00e9 sv\u00ed\u010dky a difuz\u00e9ry:", function(b) { for (var i = 0; i < par.length; i++) addProduct(b, par[i]); });
+    }
 
-    if (/vlasy|\u0161ampon|sampon|kondicion|maska na vlasy/.test(ql))
-      return botReply("Pro vlasy nab\u00edz\u00edme \u0161ampony, kondicion\u00e9ry, masky i s\u00e9ra. Jak\u00e9 m\u00e1te vlasy \u2013 such\u00e9, mastn\u00e9, barven\u00e9, nebo jemn\u00e9?");
+    if (/vlasy|\u0161ampon|sampon|kondicion|maska na vlasy/.test(ql)) {
+      var vl = findByCat("\u0160ampon", 2);
+      return botReply("Pro vlasy nab\u00edz\u00edme \u0161ampony, kondicion\u00e9ry a masky:", function(b) { for (var i = 0; i < vl.length; i++) addProduct(b, vl[i]); });
+    }
 
-    if (/t\u011blo|telov|sprchov|ruce|nohy|depilac/.test(ql))
-      return botReply("T\u011blov\u00e1 p\u00e9\u010de zahrnuje kr\u00e9my, sprchov\u00e9 gely, p\u00e9\u010di o ruce i nohy. Co v\u00e1s zaj\u00edm\u00e1 nejv\u00edc?");
+    if (/t\u011blo|telov|sprchov|ruce|nohy|depilac/.test(ql)) {
+      var telo = findByCat("Sprchov", 2);
+      return botReply("T\u011blov\u00e1 p\u00e9\u010de:", function(b) { for (var i = 0; i < telo.length; i++) addProduct(b, telo[i]); });
+    }
 
-    if (/nehty|lak|manik|gel na nehty/.test(ql))
-      return botReply("Laky na nehty m\u00e1me v des\u00edtk\u00e1ch odst\u00edn\u016f, plus p\u00e9\u010di o nehty a ku\u017ei\u010dku. Jak\u00e1 barva v\u00e1s zaj\u00edm\u00e1, nebo hled\u00e1te sp\u00ed\u0161e zpev\u0148uj\u00edc\u00ed p\u00e9\u010di?");
+    if (/nehty|lak|manik|gel na nehty/.test(ql)) {
+      var laky = findByCat("Laky na nehty", 3);
+      return botReply("Laky na nehty m\u00e1me v des\u00edtk\u00e1ch odst\u00edn\u016f:", function(b) { for (var i = 0; i < laky.length; i++) addProduct(b, laky[i]); });
+    }
 
-    if (/o\u010di|eye|st\u00edn|linka|oboc/.test(ql))
-      return botReply("Pro l\u00ed\u010den\u00ed o\u010d\u00ed nab\u00edz\u00edme \u0159asenky, o\u010dn\u00ed st\u00edny, linky i p\u00e9\u010di o obo\u010d\u00ed. Co p\u0159esn\u011b hled\u00e1te?");
+    if (/o\u010di|eye|st\u00edn|linka|oboc/.test(ql)) {
+      var oci = findByCat("\u0158asenky", 1).concat(findByCat("O\u010dn\u00ed", 1));
+      return botReply("Pro l\u00ed\u010den\u00ed o\u010d\u00ed:", function(b) { for (var i = 0; i < oci.length; i++) addProduct(b, oci[i]); });
+    }
 
     if (/doporu\u010d|porad|pomoc|pot\u0159ebuj|hled\u00e1m|chci|cht\u011bla|rad/.test(ql))
-      return botReply("R\u00e1da porad\u00edm! \u0158ekn\u011bte mi v\u00edce \u2013 jak\u00fd produkt hled\u00e1te, pro jakou p\u0159\u00edle\u017eitost, nebo jak\u00fd m\u00e1te typ pleti? Podle toho v\u00e1m vyberu to nejlep\u0161\u00ed.", function(b) {
+      return botReply("R\u00e1da porad\u00edm! Co p\u0159esn\u011b hled\u00e1te?", function(b) {
         var acts = document.createElement("div"); acts.className = "acts";
-        var opts = [["Make-upy","make-up"],["P\u00e9\u010de o ple\u0165","p\u00e9\u010de o ple\u0165"],["Rt\u011bnky","rt\u011bnky"],["Bestsellery","best"]];
+        var opts = [["Make-upy","make-up"],["P\u00e9\u010de o ple\u0165","ple\u0165"],["Rt\u011bnky","rt\u011bnky"],["Bestsellery","best"]];
         for (var i = 0; i < opts.length; i++) { (function(x) { var btn = document.createElement("button"); btn.className = "abtn"; btn.textContent = x[0]; btn.addEventListener("click", function() { if (x[1]==="best") { doAction("best"); } else { addUsr(x[0]); processInput(x[1]); } }); acts.appendChild(btn); })(opts[i]); }
         b.appendChild(acts);
       });
 
     var f = findProds(ql);
     if (f.length > 0) {
-      var shown = f.length;
-      var txt = "Na\u0161la jsem " + shown + " " + prodWord(shown) + ":";
-      return botReply(txt, function(b) { for (var i = 0; i < f.length; i++) { addProduct(b, f[i]); } });
+      var shown = Math.min(f.length, 5);
+      var txt = "Na\u0161la jsem " + f.length + " " + prodWord(f.length) + ":";
+      return botReply(txt, function(b) { for (var i = 0; i < shown; i++) { addProduct(b, f[i]); } });
     }
 
     for (var ci = 0; ci < FAQ.length; ci++) {
