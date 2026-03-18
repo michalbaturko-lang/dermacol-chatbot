@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dermacol Beauty Poradkyn&#283;</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --pink: #E91E8C;
+    --pink-dark: #C4176F;
+    --pink-light: #F04DA3;
+    --cream: #FFF5FA;
+    --rose: #FFF0F7;
+    --txt: #1A1A2E;
+    --txt2: #6B6B80;
+    --bdr: #F0D4E4;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: linear-gradient(135deg, var(--cream), var(--rose), var(--cream));
+    min-height: 100vh; color: var(--txt);
+    display:flex; flex-direction:column; align-items:center; padding:16px;
+  }
+  .hdr { text-align:center; margin-bottom:14px; }
+  .hdr h1 { font-family:'Playfair Display',serif; font-size:2rem; color:var(--pink); font-weight:600; }
+  .hdr p { color:var(--txt2); font-size:0.9rem; margin-top:4px; }
+
+  .box {
+    width:100%; max-width:480px; height:calc(100vh - 120px); max-height:700px;
+    background:#fff; border-radius:16px; box-shadow:0 12px 48px rgba(233,30,140,0.18);
+    display:flex; flex-direction:column; overflow:hidden; border:1px solid var(--bdr);
+  }
+  .box-hdr {
+    background:linear-gradient(135deg, var(--pink), var(--pink-dark));
+    color:#fff; padding:14px 18px; display:flex; align-items:center; gap:12px; flex-shrink:0;
+  }
+  .ava { width:42px; height:42px; border-radius:50%; background:rgba(255,255,255,0.15); display:flex; align-items:center; justify-content:center; font-size:20px; border:2px solid rgba(255,255,255,0.3); flex-shrink:0; }
+  .box-hdr h2 { font-family:'Playfair Display',serif; font-size:1.05rem; font-weight:600; }
+  .box-hdr .sub { font-size:0.72rem; opacity:0.8; margin-top:2px; }
+  .dot { width:7px; height:7px; background:#4ADE80; border-radius:50%; display:inline-block; margin-right:4px; }
+  .tabs { margin-left:auto; display:flex; gap:3px; padding:3px; background:rgba(255,255,255,0.15); border-radius:18px; }
+  .tab { padding:5px 11px; border:none; border-radius:15px; font-size:0.7rem; font-weight:500; cursor:pointer; font-family:inherit; color:rgba(255,255,255,0.65); background:transparent; transition:all 0.2s; }
+  .tab.on { background:rgba(255,255,255,0.25); color:#fff; }
+  .tab:hover { color:#fff; }
+
+  .msgs {
+    flex:1; overflow-y:auto; padding:18px; display:flex; flex-direction:column; gap:12px;
+    scroll-behavior:smooth; background:linear-gradient(180deg, var(--rose) 0%, #fff 30%);
+  }
+  .msgs::-webkit-scrollbar { width:4px; }
+  .msgs::-webkit-scrollbar-thumb { background:var(--bdr); border-radius:4px; }
+
+  .m { display:flex; gap:9px; max-width:90%; animation:mIn 0.3s ease; }
+  .m.bot { align-self:flex-start; }
+  .m.usr { align-self:flex-end; flex-direction:row-reverse; }
+  .m-ava { width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13px; flex-shrink:0; }
+  .m.bot .m-ava { background:linear-gradient(135deg, var(--pink), var(--pink-light)); color:#fff; }
+  .m.usr .m-ava { background:#FFD6EE; }
+  .m-body { max-width:calc(100% - 39px); }
+  .bub { padding:11px 15px; border-radius:18px; font-size:0.88rem; line-height:1.5; word-wrap:break-word; }
+  .m.bot .bub { background:var(--rose); border-bottom-left-radius:4px; }
+  .m.usr .bub { background:linear-gradient(135deg, var(--pink), var(--pink-light)); color:#fff; border-bottom-right-radius:4px; }
+  .bub strong { color:var(--pink); }
+  .m.usr .bub strong { color:#FFD6EE; }
+
+  .dots { display:flex; gap:4px; }
+  .dots span { width:6px; height:6px; background:var(--pink-light); border-radius:50%; opacity:0.4; animation:dotB 1.2s infinite; }
+  .dots span:nth-child(2) { animation-delay:0.15s; }
+  .dots span:nth-child(3) { animation-delay:0.3s; }
+
+  .acts { display:flex; flex-wrap:wrap; gap:7px; margin-top:9px; }
+  .abtn {
+    display:inline-flex; align-items:center; gap:5px; padding:7px 13px;
+    background:#fff; border:1.5px solid var(--bdr); border-radius:22px;
+    font-size:0.8rem; font-weight:500; color:var(--pink); cursor:pointer;
+    font-family:inherit; transition:all 0.2s;
+  }
+  .abtn:hover { background:var(--pink); color:#fff; border-color:var(--pink); transform:translateY(-1px); }
+
+  .crumb { display:flex; align-items:center; gap:4px; font-size:0.73rem; color:var(--txt2); margin-bottom:6px; flex-wrap:wrap; }
+  .crumb span { cursor:pointer; color:var(--pink); text-decoration:underline; }
+  .crumb span:hover { color:var(--pink-dark); }
+  .ti {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:9px 13px; background:#fff; border:1.5px solid var(--bdr);
+    border-radius:9px; cursor:pointer; transition:all 0.2s; margin-top:5px;
+  }
+  .ti:hover { border-color:var(--pink); background:var(--rose); transform:translateX(2px); }
+  .ti-l { display:flex; align-items:center; gap:9px; }
+  .ti-i { font-size:1.1rem; width:26px; text-align:center; }
+  .ti-n { font-size:0.85rem; font-weight:500; }
+  .ti-d { font-size:0.7rem; color:var(--txt2); margin-top:1px; }
+  .ti-a { color:var(--txt2); font-size:0.85rem; }
+
+  .pc {
+    display:flex; gap:11px; padding:11px; background:#fff;
+    border:1.5px solid var(--bdr); border-radius:9px; margin-top:7px; cursor:pointer; transition:all 0.2s;
+  }
+  .pc:hover { border-color:var(--pink); box-shadow:0 3px 12px rgba(233,30,140,0.1); transform:translateY(-1px); }
+  .pc-img { width:60px; height:60px; border-radius:7px; flex-shrink:0; object-fit:cover; background:#f8e8f2; }
+  .pc-img img { width:100%; height:100%; object-fit:cover; border-radius:7px; }
+  .pc-desc { font-size:0.78rem; color:var(--txt2); margin-top:4px; line-height:1.4; }
+  .pc-info { flex:1; min-width:0; }
+  .pc-name { font-weight:600; font-size:0.83rem; }
+  .pc-sub { font-size:0.7rem; color:var(--txt2); margin-top:1px; }
+  .pc-bot { display:flex; justify-content:space-between; align-items:center; margin-top:5px; }
+  .pc-price { font-weight:700; font-size:0.92rem; color:var(--pink); }
+  .pc-rate { font-size:0.7rem; color:#E9A820; font-weight:500; }
+  .tag { display:inline-block; padding:1px 6px; background:var(--pink); color:#fff; border-radius:3px; font-size:0.58rem; font-weight:700; letter-spacing:0.04em; margin-left:5px; vertical-align:middle; }
+
+  .tip {
+    background:linear-gradient(135deg, var(--rose), var(--cream));
+    border-left:3px solid var(--pink); padding:9px 13px;
+    border-radius:0 9px 9px 0; margin-top:7px; font-size:0.8rem; line-height:1.55;
+  }
+  .tip-t { font-weight:600; color:var(--pink); font-size:0.76rem; margin-bottom:3px; }
+
+  .faq-cat { font-weight:600; font-size:0.8rem; color:var(--pink); margin-top:10px; margin-bottom:3px; }
+  .faq-i { border:1.5px solid var(--bdr); border-radius:9px; margin-top:5px; overflow:hidden; }
+  .faq-q { display:flex; align-items:center; justify-content:space-between; padding:9px 13px; cursor:pointer; font-size:0.83rem; font-weight:500; color:var(--pink); background:#fff; border:none; width:100%; text-align:left; font-family:inherit; }
+  .faq-q:hover { background:var(--rose); }
+  .faq-ans { padding:0 13px 10px; font-size:0.8rem; color:var(--txt2); line-height:1.55; display:none; }
+
+  .ibar { padding:12px 14px; border-top:1px solid var(--bdr); display:flex; gap:9px; align-items:center; background:#fff; flex-shrink:0; }
+  .ibar input {
+    flex:1; padding:11px 15px; border:1.5px solid var(--bdr); border-radius:22px;
+    font-size:0.86rem; font-family:inherit; outline:none; color:var(--txt); background:var(--cream); transition:all 0.2s;
+  }
+  .ibar input:focus { border-color:var(--pink); background:#fff; box-shadow:0 0 0 3px rgba(233,30,140,0.1); }
+  .ibar input::placeholder { color:#B8A0B0; }
+  .sbtn {
+    width:42px; height:42px; border-radius:50%; background:linear-gradient(135deg, var(--pink), var(--pink-light));
+    color:#fff; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center;
+    font-size:1.05rem; transition:all 0.2s; flex-shrink:0;
+  }
+  .sbtn:hover { transform:scale(1.05); }
+  .sbtn:disabled { opacity:0.4; cursor:default; transform:none; }
+
+  @keyframes mIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes dotB { 0%,60%,100% { transform:translateY(0); opacity:0.4; } 30% { transform:translateY(-5px); opacity:1; } }
+  @media (max-width:520px) { body { padding:8px; } .box { height:calc(100vh - 80px); max-height:none; } .hdr h1 { font-size:1.5rem; } }
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <h1>Dermacol Beauty Poradkyn&#283;</h1>
+  <p>Va&#353;e osobn&#237; kosmetick&#225; konzultantka</p>
+</div>
+
+<div class="box">
+  <div class="box-hdr">
+    <div class="ava">D</div>
+    <div>
+      <h2>Dermacol Beauty Poradkyn&#283;</h2>
+      <div class="sub"><span class="dot"></span>Online</div>
+    </div>
+    <div class="tabs">
+      <button class="tab on" id="tabChat">Chat</button>
+      <button class="tab" id="tabTree">Kategorie</button>
+    </div>
+  </div>
+  <div class="msgs" id="msgs"></div>
+  <div class="ibar">
+    <input type="text" id="inp" placeholder="Napi&#353;te sv&#367;j dotaz..." />
+    <button class="sbtn" id="sendBtn">&#10148;</button>
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+
+  var chatLog = [];
+  var apiKey = (typeof DERMACOL_CONFIG !== "undefined" && DERMACOL_CONFIG.apiKey) ? DERMACOL_CONFIG.apiKey : null;
+  var inTreeMode = false;
+
+  var CATS = [
+    {id:"liceni",n:"L\u00ed\u010den\u00ed",i:"\uD83D\uDC84",d:"Make-up, \u0159asenky, rt\u011bnky, o\u010dn\u00ed st\u00edny",ch:[
+      {id:"tvar",n:"Tv\u00e1\u0159",i:"\uD83D\uDC69",ch:[
+        {id:"make-upy",n:"Make-upy",i:"\uD83C\uDFA8"},
+        {id:"bb-kremy",n:"BB kr\u00e9my",i:"\u2728"},
+        {id:"baze",n:"B\u00e1ze pod make-up",i:"\uD83D\uDCA7"},
+        {id:"pudry",n:"Pudry",i:"\u2601\uFE0F"},
+        {id:"tvarenky",n:"Tv\u00e1\u0159enky",i:"\uD83C\uDF38"},
+        {id:"korektory",n:"Korektory",i:"\uD83D\uDD8C\uFE0F"},
+        {id:"fixace",n:"Fixace make-upu",i:"\uD83D\uDCA8"}
+      ]},
+      {id:"oci",n:"O\u010di",i:"\uD83D\uDC41\uFE0F",ch:[
+        {id:"rasenky",n:"\u0158asenky",i:"\uD83E\uDEF6"},
+        {id:"ocni-stiny",n:"O\u010dn\u00ed st\u00edny",i:"\uD83C\uDF08"},
+        {id:"ocni-linky",n:"O\u010dn\u00ed linky",i:"\u270F\uFE0F"},
+        {id:"oboci",n:"Obo\u010d\u00ed",i:"\uD83D\uDD8A\uFE0F"}
+      ]},
+      {id:"rty",n:"Rty",i:"\uD83D\uDC8B",ch:[
+        {id:"rtenky",n:"Rt\u011bnky",i:"\uD83D\uDC84"},
+        {id:"lesky",n:"Lesky na rty",i:"\u2728"},
+        {id:"balzamy",n:"Balz\u00e1my na rty",i:"\uD83C\uDF6F"},
+        {id:"konturovaci",n:"Konturovac\u00ed tu\u017eky",i:"\u270F\uFE0F"}
+      ]},
+      {id:"nehty",n:"Nehty",i:"\uD83D\uDC85",ch:[
+        {id:"laky",n:"Laky na nehty",i:"\uD83C\uDFA8"},
+        {id:"pece-n",n:"P\u00e9\u010de o nehty",i:"\u2764\uFE0F"}
+      ]}
+    ]},
+    {id:"plet",n:"Ple\u0165",i:"\u2728",d:"Kr\u00e9my, s\u00e9ra, \u010di\u0161t\u011bn\u00ed, masky",ch:[
+      {id:"kremy",n:"Kr\u00e9my",i:"\uD83E\uDDF4",ch:[
+        {id:"denni",n:"Denn\u00ed kr\u00e9my",i:"\u2600\uFE0F"},
+        {id:"nocni",n:"No\u010dn\u00ed kr\u00e9my",i:"\uD83C\uDF19"},
+        {id:"ocni",n:"O\u010dn\u00ed kr\u00e9my",i:"\uD83D\uDC41\uFE0F"}
+      ]},
+      {id:"cisteni",n:"\u010ci\u0161t\u011bn\u00ed",i:"\uD83E\uDDF9",ch:[
+        {id:"mleka",n:"\u010cistic\u00ed ml\u00e9ka",i:"\uD83E\uDD5B"},
+        {id:"micelarni",n:"Micel\u00e1rn\u00ed vody",i:"\uD83D\uDCA7"},
+        {id:"gely",n:"\u010cistic\u00ed gely",i:"\uD83E\uDDFC"},
+        {id:"peelingy",n:"Peelingy",i:"\uD83C\uDF00"}
+      ]},
+      {id:"sera",n:"S\u00e9ra",i:"\uD83E\uDDEA"},
+      {id:"masky",n:"Masky",i:"\uD83E\uDD8B"},
+      {id:"opalovani",n:"Opalov\u00e1n\u00ed",i:"\u2600\uFE0F"}
+    ]},
+    {id:"telo",n:"T\u011blo",i:"\uD83E\uDDF4",d:"T\u011blov\u00e1 p\u00e9\u010de, sprchov\u00e9 gely",ch:[
+      {id:"telove-kremy",n:"T\u011blov\u00e9 kr\u00e9my",i:"\uD83E\uDDF4"},
+      {id:"sprchove-gely",n:"Sprchov\u00e9 gely",i:"\uD83D\uDEB0"},
+      {id:"kremy-ruce",n:"Kr\u00e9my na ruce",i:"\uD83D\uDC90"},
+      {id:"pece-nohy",n:"P\u00e9\u010de o nohy",i:"\uD83E\uDDB6"}
+    ]},
+    {id:"vlasy",n:"Vlasy",i:"\uD83D\uDC87",d:"\u0160ampony, kondicion\u00e9ry, masky",ch:[
+      {id:"sampony",n:"\u0160ampony",i:"\uD83E\uDDF4"},
+      {id:"kondicionery",n:"Kondicion\u00e9ry",i:"\u2728"},
+      {id:"masky-vl",n:"Masky",i:"\uD83E\uDD8B"},
+      {id:"sera-vl",n:"S\u00e9ra",i:"\uD83E\uDDEA"}
+    ]},
+    {id:"vune",n:"V\u016fn\u011b",i:"\uD83C\uDF39",d:"Parf\u00e9my, bytov\u00e9 v\u016fn\u011b, sv\u00ed\u010dky",ch:[
+      {id:"damske",n:"D\u00e1msk\u00e9 parf\u00e9my",i:"\uD83C\uDF3A"},
+      {id:"panske",n:"P\u00e1nsk\u00e9 parf\u00e9my",i:"\uD83C\uDF32"},
+      {id:"difuzery",n:"Difuz\u00e9ry",i:"\uD83C\uDF3F"},
+      {id:"svicky",n:"Vonn\u00e9 sv\u00ed\u010dky",i:"\uD83D\uDD6F\uFE0F"}
+    ]},
+    {id:"pro-muze",n:"Pro mu\u017ee",i:"\uD83D\uDC68",d:"Kompletn\u00ed p\u00e9\u010de pro mu\u017ee"},
+    {id:"balicky",n:"D\u00e1rkov\u00e9 bal\u00ed\u010dky",i:"\uD83C\uDF81",d:"Sety a poukazy"}
+  ];
+
+  var PROD_COLORS = {
+    "make-upy": "linear-gradient(135deg,#E91E8C,#FF6BB5)",
+    "bb-kremy": "linear-gradient(135deg,#B060D0,#E090F0)",
+    "rtenky": "linear-gradient(135deg,#D42050,#FF4070)",
+    "balzamy": "linear-gradient(135deg,#E07090,#FFB0C0)",
+    "default": "linear-gradient(135deg,#C4176F,#F04DA3)"
+  };
+
+  var PRODS = [
+    {id:"make-up-cover",n:"Make-up Cover",s:"Vod\u011bodoln\u00fd extr\u00e9mn\u011b kryc\u00ed make-up",p:369,r:4.7,rc:72,c:"make-upy",t:["BESTSELLER","SPF30"],d:"Legend\u00e1rn\u00ed vysoce kryc\u00ed make-up z roku 1969. Vod\u011b- a potu-odoln\u00fd, zakryje i tetov\u00e1n\u00ed. SPF 30.",sk:"V\u0161echny typy pleti",img:"data:image/jpeg;base64,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",advice:"Tohle je n\u00e1\u0161 absolutn\u00ed bestseller \u2013 vznikl v roce 1969 ve filmov\u00fdch studi\u00edch Barrandov. Zakryje opravdu v\u0161echno, od zarudnut\u00ed a\u017e po tetov\u00e1n\u00ed. M\u00e1 SPF 30, tak\u017ee chr\u00e1n\u00ed i p\u0159ed sluncem."},
+    {id:"collagen-make-up",n:"Collagen Make-up",s:"Make-up s kolagenem",p:299,r:4.5,rc:38,c:"make-upy",t:["ANTI-AGE"],d:"Lehk\u00fd make-up s kolagenem, vypl\u0148uje vr\u00e1sky.",sk:"Zral\u00e1 a such\u00e1 ple\u0165",img:"data:image/jpeg;base64,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",advice:"Skv\u011bl\u00e1 volba pro zralou ple\u0165! Kolagen v n\u011bm pomalu vypl\u0148uje jemn\u00e9 vr\u00e1sky a z\u00e1rove\u0148 dodává pleti p\u0159irozen\u00fd sv\u011b\u017e\u00ed vzhled. Lehk\u00e1 textura, kter\u00e1 se prost\u011b rozp\u00edj\u00ed po pleti."},
+    {id:"hyaluron-make-up",n:"Hyaluron Make-up & Serum",s:"Hydrata\u010dn\u00ed make-up",p:249,r:4.6,rc:45,c:"make-upy",t:["HYDRATACE"],d:"Kombinace make-upu a s\u00e9ra s kyselinou hyaluronovou.",sk:"Norm\u00e1ln\u00ed a\u017e such\u00e1 ple\u0165",img:"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAB4AHgDASIAAhEBAxEB/8QAGwABAAIDAQEAAAAAAAAAAAAAAAUGAQQHAgP/xAA2EAACAQMCAwUECAcAAAAAAAAAAQIDBBEFEiExUQYTQWGRIlJxgQcUNIKhscHRFSMycnOS8P/EABgBAQADAQAAAAAAAAAAAAAAAAABAgME/8QAGxEBAQEBAQEBAQAAAAAAAAAAAAECEQMSITH/2gAMAwEAAhEDEQA/AO/gAAAAAAbwssADG+PvL1G+PvL1AyDzvh70fUymmsppryAyAAAAAAAAAAAAAGJxUouL5MyANKSoR5zivvIbaT5Nf7EdqV7o+n13TrqHeuOXCMHJ4bzx8sojFrOgTeKm+KfNTpPD9DO+mZeWxb5qxNUUs7s/Bm1brFCHhlZIWnXsrin3lpKEs+MU1+ZOwWIRXRF5Zf4izj0ACUAAAAAAAAAAAAADmvbi5rUb+1uKcKb3UZU3ufNxfD8Wl8yru/rV6/d0aUJz4tx8UlLD9FgtXbfTYXWm1bl0pudG6cE037SbfDh5qJV7DTpUtQ3UrepKL7/KeeTkpL1fE4PST6dGe8XLszeVK8lbyhTUVBSUovn7WOX/AHIvxzzRqENFjXualrKFOjbKXey4yaXtOPq36Loeo/SFUqvNK0rbXycoI18t5zlGvPW7+OggruldqqN7ONOvDunJ4UuSz0fQsR0Z1NTsZazc3lAAWVAAAAAAAAACG1fV527drZbXcte1OSzGkur6vovUi2SdqZLbyIPtTWnHQ9ZoqlGSp1lVTc8NY2S5epStK1q4d4t1pS2QT3yVVvb+Bfu4lX0nVbetVcp17ZbKk5cZy2NeHmkc+0vTbx10pzhBbVhVJTTXXj1OL05eWujMs/F1s7yWo6bcd7RhCKhtxGe7OVxNRW9GCwoIkqdShOi7K2qxnONPjiWcLK5s1Z1bO2qqlKbuLl/00KMXOT+6v1wRmfi8vHxrWyhpdzcNKMYwe3rJ+CXzwXy2VRWtJVXmooR3/HHEgdP0i6u61K61OCpUqUlOlaJ59pcpTa4ZXhFcF5ljOrzz8sPXXfwABqyAAAAAAAAaWqXjtLX+XjvZvbDy6v5FXS2555by23xb6vzJ7VKUq1zBeEY8PXj+h8bfSXWlmo9tNdObMNy6rbFmY0ovNGP9n6sod5c1HqtSnKpJ0tzSjjlwxjGOvj+51qdpaUqcYSpwUUsLP7ld1DStEdRzlGCm/FVGVvjVp6xDdkLKjf3lxRuIOdJ0suO5rPFdC/2lhaWMNlrbUqMXzVOCWfj1Ins9a21Bz+q01GnjjJeL+JPG2M/MZb19UABdQAAAAAAAAAAGHGLeWk38DKSSwuQAHwulFwhuxjeuZBXtO2+v7IqG7oibvvs/3l+ZVJWsI9t++UVnZNt/IprXOL5nerXp/wBhp8Mc+HzZsmppaxpdt/jRtl4oAAAAAAAAAAAAAAAA1r/P1V4jKXtLgvjzIuVq/wCKVLpJZdPbyJyUVJYa4HnuYe6iLOpl4+VhFwsaMWmnGKXE2DCSisLkZJQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP//Z",advice:"Tohle je 2v1 \u2013 make-up a hydrata\u010dn\u00ed s\u00e9rum v jednom. Kyselina hyaluronov\u00e1 dr\u017e\u00ed vlhkost v pleti, tak\u017ee ple\u0165 nevysych\u00e1 a vypad\u00e1 sv\u011b\u017ee cel\u00fd den. \u0158ekla bych, \u017ee je ide\u00e1ln\u00ed pro suchou a\u017e norm\u00e1ln\u00ed ple\u0165."},
+    {id:"16h-lip",n:"16H barva na rty 2v1",s:"Dvouslo\u017ekov\u00e1 barva + lesk",p:249,r:4.3,rc:56,c:"rtenky",t:["BESTSELLER"],d:"Dvouslo\u017ekov\u00e1 barva na rty s 16hodinovou v\u00fddr\u017e\u00ed.",sk:null,img:"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD//gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2NjIpLCBxdWFsaXR5ID0gODUK/9sAQwAIBgYHBgUIBwcHCQkICgwUDQwLCwwZEhMPFB0aHx4dGhwcICQuJyAiLCMcHCg3KSwwMTQ0NB8nOT04MjwuMzQy/9sAQwEJCQkMCwwYDQ0YMiEcITIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIy/8AAEQgAeAB4AwEiAAIRAQMRAf/EABwAAQACAgMBAAAAAAAAAAAAAAAFBgcIAgMEAf/EAD0QAAEDAwIDAwcKBQUAAAAAAAEAAgMEBRESIQYxQRMiUQcUMmFxgbEVMzRCUnKRobLBFiQldKImNTZjZP/EABkBAQADAQEAAAAAAAAAAAAAAAABAgMEBf/EACQRAAICAQQCAQUAAAAAAAAAAAABAgMRBCExQQUSEyIyscHh/9oADAMBAAIRAxEAPwDP6IiAIiIAiLEHHHElTR1z9u1LppGtDnkNa1pwAAPeSolJRWWbUUSul6w5Mvgg8kWB+E+MKqS/U7NBiPaN1GOU6XNz3muaee35rPCiMlJZQuolTL1kEUJf+JqXh2e2tq45DHXVIp+1bjTESNi71ZwptWyZuLSTfYREQqEREAREQBERAEREAWv/AB1KJJYJC4Ye6V2c+L1sAdhlaw+UyB9RRWrS1pAjeSSWggkjHPp7N1nYsrB6PjpuEpTSzhEbZ64RVfncD2uDCCD057ra9pDmgjkd1p7ZGOip6iIgDS04IGMjoVt1b5O1t1NJ9qJjvxaFFWyHkG5esnyQPH3Dr+JuGJKKGSOOoZI2WJ784BGx5b8iVOWttS21Ujax7X1IhYJXN5OfgZI967qkZgcFyh+ZZ90LTG+Thc24qHSOaIikoEREAREQBERAEREBwlOIXnwaVrpxxTec01sj1af5fORzWxNS5rKWVz3BrWscS48gMLXvjmroYIbY5tYxxFKNTXMczwwRkbg7rK1NrY9Lxs64zaseE/6VCjjMQkjLi4iPGT1W1Fhdr4etr/tUsR/wC1UtlxttTLP2tdHD3Djuud8ByWy1rvtstfk9oLxU1kYoIKCJzpxnBAaBt13O2EqTS3HkLITcVB5wT9U9jIsOc0Fx0tBPM88D8CsV8SeUi6wV89vtscVK2nkMRlcNb3EbZ32H5qHm4/jPHdJcL/VeY0kIcYoXgkRMcw4OwOScjJ/ZVG43+13K9XCppKxksL6h7g8AjYkkcwk3JrY00lFELMWtPbPO2c8F5tHlNvVLUt+UHMrYCRqBYGvA9RGN/asv0VbBcaOKrpnh8MrdTXeK1qjGojBznkVmHyX1MslrrKZ7wY4XtLG5yW6gc/BRVJt4Zv5LSVxr+WCwXxERbHhBERAEREAREQHiu/8Astd/byfpK1v4wa75SsTxnEdPTPcQB3Wg7nfZbI3fezV39vJ+krXbiJ7RcLTqdjVQwtHeAJOobDPVT0EUC6tczi27tc17SGuy14Gpuw2OPDx6q13fiOquXktt9r3jo6Oha0Mz84/PpH9h0VRuX/Lb16OzpRhvIb9O634BSzh/oHP/AJh+pZSf0xO/QwjJ2NriLJLiYkcWW5wDsMFOSW9BpZ47DwyfFQEoc28XdrtQcKhwIdjI25HCs95I/iqAZGXR0wAJG/zeyqYP9Su52+kP9EYHXkMD4D2LVfecD4LxTNe6KJrGl7y1oAAyScDAHrWceA+HJeH7ITVACsqnCSVv2Bjut93X1kqO4B4Lp7XQ0t0q9E1bJE18eN2wgtHLxdjmfcOub2soQxuz1NdrvliqocfkIiLQ8sIiIAiIgC8dxutBaac1Fwq4aaIfWkdjPqA5k+xeqRgkYWEuAPVpwfxWOeNOBKitmirLXEZpANLmuk1PPXUXvdk+GAqybS2N9PXXZNRslhHVxB5UaWanlo7RSPm7VpjdPPljQDts3mffhYp4wliZW2F8kgZGyKnL3Z9EB2529Sm6zhq80LgKi21UeTtiMkH3hZjkooJaKl1wxktjH1B4exRXJvOTr19FVSh8Xef0ajTVMFXxFcZ6Z+uGRrzGdOnbbG3T2KwuY48AaQDnzUbY9az3UUFPBM+SOGNrscwwKTsHBVlhZFcpac1NTMBLmc6msJ32by/HKSWcJdGOlvjSp+3awa9cVSRU/FNFNUEthi7EyO05w0Nbnbqq5TSCqqLlNCHOZJI5ze6QcEHGy3LuEEb6KQGNh5c2jxXZRwxspYdLGjDByAHRaZ3ycZ0WQFtht4IwRTRDB+4F70RQAiIgCIiAIiIAiIgCg3uAooyTju4CnFWq5pNFAA1x0z74HIAlGCEEpkpg2RwMzYwXjOSCVdLUMWijH/Sz4KhUrJB25ka9uIYwNQ9Rzv1WQLcNNspG+ELB/iFVEs5Vn0V65U/0aL7oXGs2pXrlTfRovuhWIO1ERAEREAREQBERAEREAUHJ3Wyt8Jn/ABz+6nFB3ClqRUSmDDmvdqx4HAB+CAiKoa45hn6pVvp2dnTxM+ywD8lWIbbVzSFs7ezjdsTndWtQiTw3R7m0oDc7uxt1XrhaWQRtPMNAK6qvJYzHR2eS72u1NB8QpIPqIiAIiIAiIgCIiAIiIAut0YLiURAOzHguxEQHF7Q5uCvrRhoCIgPqIiAIiIAiIgP/2Q==",advice:"Tato barva na rty vydr\u017e\u00ed a\u017e 16 hodin \u2013 p\u0159e\u017eijete s n\u00ed i obn\u011bd a k\u00e1vu! Prvn\u00ed vrstva je st\u00e1l\u00e1 barva, druh\u00e1 dodává lesk a hydrataci. Prostě naneste a nemus\u00edte se cel\u00fd den starat."},
+    {id:"imperial-rose",n:"Imperial Rose olej na rty",s:"Vy\u017eivuj\u00edc\u00ed olej s r\u016f\u017e\u00ed",p:99,r:4.8,rc:23,c:"balzamy",t:["NOVINKA"],d:"Luxusn\u00ed olej na rty obohacen\u00fd o r\u016f\u017eov\u00fd olej.",sk:null,img:"data:image/jpeg;base64,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",advice:"Kr\u00e1sn\u011b vy\u017eivuje a zm\u011bk\u010duje rty d\u00edky r\u016f\u017eov\u00e9mu oleji. Cena je super \u2013 za 99 K\u010d dostanete luxusn\u00ed p\u00e9\u010di. Ide\u00e1ln\u00ed i pod rt\u011bnku jako z\u00e1klad."},
+    {id:"acnecover",n:"AcneCover Make-up",s:"Pro problematickou ple\u0165",p:199,r:4.2,rc:31,c:"make-upy",t:["PROBLEMATICK\u00c1 PLE\u0164"],d:"Speci\u00e1ln\u00ed make-up pro ple\u0165 s akn\u00e9. Kryje nedokonalosti.",sk:"Mastn\u00e1/problematick\u00e1 ple\u0165",img:"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD//gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2NjIpLCBxdWFsaXR5ID0gODUK/9sAQwAIBgYHBgUIBwcHCQkICgwUDQwLCwwZEhMPFB0aHx4dGhwcICQuJyAiLCMcHCg3KSwwMTQ0NB8nOT04MjwuMzQy/9sAQwEJCQkMCwwYDQ0YMiEcITIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIy/8AAEQgAeAB4AwEiAAIRAQMRAf/EABsAAQACAwEBAAAAAAAAAAAAAAAEBgMFBwIB/8QAOxAAAQMDAgIECwUJAAAAAAAAAQACAwQFERIhMVETQWGRBhQVIiMyQnGBksFSVLHR4RYkM0RTYoKh8f/EABkBAQADAQEAAAAAAAAAAAAAAAACAwQBBf/EACoRAAICAQIDCAIDAAAAAAAAAAABAgMRBBITQVEFFCExQnGBkVLhU6Hw/9oADAMBAAIRAxEAPwDv6IiAIiIAiKJNc6OnmdFLO1jxxBBXG0vM6k35EtFCF3t5/m4+9evKlB97h+Zc3x6ndkuhLRRPKlD97i+Zeoq+kmkEcc7HOPAApuXUbZdCSiIpEQiIgCIiAIiIAiIgCrl6p6dlS6aeRzNbmtGBnJOwCsa1l1bAcGZ8YGkkB4znH/VCcNywThNQeW8FSLrWYjM2uPR6tOrQeOnV+G6Yt4Lwa5oLAS4cgCAfxHep5uVv1HMkeeej9F8ZNanHPSxtI6zkfRU92n+DLO+VfyL7RhbBQBocawafO3AyCG+sfcFs7THTGspn00pka4F4djbGFgbU25zdLJaUY4DAH0UuxRt8ele1rQwRjToxg5PEY9yKpxksrB3jxnF7ZJ+xYURFpM4REQBERAEREAREQBae+ty+kJ4FzmH4t/Rbha28wST08PRty5krXHfG2+VOt4kiq5NwaRUnSMjYyMRzNMTS1smgbEtIJ78FeWVjB6ORssnRkuc90YBDsADPYd/9LJcbfUOqJi2nY9shBJEvLh7lEfTXBwcHU7POBBw8DO+3dwW1WVc5L7R40qr0/CD+n/uhiuM+sdINQbwAcCMbDn9FaPBaeGK1QmV4a5zABnlk/mqzNbqyenDSIGnOSDIAeGPiodb+0EE9Ky3Mp30cULWyBziC5+TnBx7lm1t8I1LY03k29maa16iTsTSxzWDqwIcAQQQesL6qNZb7UQTsbOxzGZAmY72c9YV5WOq1WLJ6ttbreGERFaVhERAEREAREQBau6XKlhngoHTNFTPksjzuQBkr1fLu20UBlDOlnedEMQPrvP06yVULTSObdHV1ZJ4xcJ89JMeDRj1GDqCott2vai+qrctz8iddIJql0YEcga3fMdT0Z354G61vic4a4aJfOO/74Sevs7VZJyNI932VAkfjgO9qqkXRIGqRoZGYsNAxqMmo/qvscBmxpDiewle5nkjcDuWSS50NuoI3VVUxmG505wqZ+JasowXSCntluke+RpkLCMA9f1VtsE0k9goJZc63wMJz7lS6ShrPDGoa51OaOytILpC3D6jsbnq7e5dDjjZFG2NjQ1jQGtA4ABadPBrMjNqJppR5npERaTMEREAREQBERAU6/P8AGr2cnLKVuho/uO5PdgLDRBzqqMgbA8lKq6CpnutSI4ydUhPwW3pbQ2mpy6Rxc8NOwOAPzXnqEp2Nm92RhBIiyu9GOPetbM93VqHxUqsp21ELdTpG6TnzHFqrTYqeWrdpiuEZcDvI4hm/LdTkciidLI7SQSSOS21t8CbSyZtfVNkrJ3+kAnOWMJ32bw27cqvtlgYRSNqGulaMaHSAv+PWujxt0xtbyACnTFNtshdJpJI9AADAGAiItRkCIiAIiIAiIgCIiAL44ZY4cwvqICtSysYwtc5oI7VqKioZqID2/MFMqmjXMMe0fxVaq429Idh3KcdAp+r+jJb2s6vRn5/R6o7QH+EUVaKkPLnuAiDR7RGd89i6muYWOMG/UOAP4oK6euT0/BeM5LNPrO9RctuMP3CIiiXhERAEREAREQBERAEREBTLxVQUNXPHO8RkkuGrbIPWFUqq60TpNqiM/wCS6xNSMndmRrXcg4ZwsXkym/oxfIFqhqdvI82/s92vwlj4/ZRPBMePXqB8A1xw5c944DbbddIWCCmbBtGA1v2QMBZ1VbZxJZNOl0/AhtzkIiKo0hERAEREAREQBERAEREAREQBERAEREAREQBERAf/2Q==",advice:"Tento make-up je speci\u00e1ln\u011b navr\u017een\u00fd pro ple\u0165 s akn\u00e9 \u2013 kryje nedokonalosti, ale z\u00e1rove\u0148 nezat\u011b\u017euje p\u00f3ry. Obsahuje antibakteri\u00e1ln\u00ed slo\u017eky, tak\u017ee o ple\u0165 pe\u010duje, i kdy\u017e ji l\u00ed\u010d\u00edte."},
+    {id:"bb-cbd",n:"BB kr\u00e9m s CBD",s:"Zklid\u0148uj\u00edc\u00ed BB kr\u00e9m",p:124,r:4.4,rc:18,c:"bb-kremy",t:["CBD"],d:"BB kr\u00e9m s CBD olejem. Sjednocuje t\u00f3n a zklid\u0148uje.",sk:"Citliv\u00e1 ple\u0165",img:"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAB4AHgDASIAAhEBAxEB/8QAGwABAQADAQEBAAAAAAAAAAAAAAYEBQcDAQL/xAA2EAACAgECAwYDBAsBAAAAAAAAAQIDBAUREiExBhNBUWFxByLRFHKBoSQyQkVSYoORk7Hh8P/EABgBAQADAQAAAAAAAAAAAAAAAAACAwQB/8QAHxEBAQEAAQQDAQAAAAAAAAAAAAIBEQMSITEEMlET/9oADAMBAAIRAxEAPwDv4AAAAAAAAAAAAAAAAAAAAAAAAAAE12r7R5WgyxVjY1d3e8XFxqXLbbbp7lKanX6IXYtfHukpdV7f8I3z2+Ep458pCPxFz0/m02n8JSR7R+IeQ1z02H+R/Qwrq8dWJd9Yl4/L4mRTjUqKff8AvyM/df6u4j8er+It6/dkX/Vf0N52Z7SXa9bkwtwljqmMWnxN777+noTF9uNTu5XSS81E33YKErNNysyb3ldfwp/yxXL82ycVW1xuo3k5njFYAC9SAAAAAAAAAAAYOqxUsPZ9ONfQzjE1JfoM35NP80cr07ntD5qoqzHCdG8N0t1Npo8YQhXlWVy3lGMd1z28j7reo4mHq0e/qtlGMe8lwzXXpFbbc234eh4Vqf2qeRZJyrtr4oR24XFcuT68zPs8Ox1pvdmfeNfm305FM61W4WcO8ZRk2n6NM6B2Lp7nsphec1Kb/GTOZWXUzbqrjOFs+UZSlxL28Cu7PdsaaaIYHcynXirupuMWmmuvuIrJ3nV1TVeMXwPPHvqyqIX0zU65reMl4o9DSzgAAAAAAAAAAGNqC3wLvu7mSTmsZOXmZMMfFs7rEqlxXTXW1r9heUfN+PQje8YlE86l9e0qGXqUchZMYR4Un8st/wANujMPvcbH2rrrlTTCHBHiXE3zXN7exvM6U+DdSZOZ82q3ta/ZlFXunT+N04ranPOtRHuYZkJSt45J/LGMWt37sq6MHu73OC6veWyJTDjKzUaoqb5zS2e3mdLjjwx6Wm1z5yl5/wDCHHLTNca/HZHKdWo6lpblvGtq6tfwp8mv77FaQPYJy1LW9b1mO/2eU1j0vwltzb/0Xxo6X0xT1vvoACxUAAAAAAAAx8qxxhwrk5eJq5xSi0ltyN1KEZ/rRT28z8PGpl1riQqd1OazEPmpup+3qSOp7xb6/mWeVtGMk/BslNWtiq309jNqztazRHGOrU2WyUa4TUpSk3skubZTW52d24yZaboPHVp2/DlalKOy4fGMPN/+ZpuymNTna9j499cbKrJNThJbqUdnumdlox6cWmNNFUKqoLaMIRUUl6JFkR3ezb7PXtjaTpWJoumUafhV8FFMdlv1fm36szQDQoAAAAAAAAAAAAAHPtWjkU5N8ZUXNKb2ca201v6ENqttzm13eRt5dzL6HZs5fNMks9b3bblO9NP+jSfD3CyLO0FV8qLI11xlJylBpdNvH3OuE52ajtKX3CjJxPGI1XdvIACbgAAAAAAAAAAAAA12oxk01Xs5eRKZWmardbvDGr4d+rsRdOEW92h3cfI5wNRoGHbjVSd3Cp7bcKe5uT4oqL5I+nQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAf//Z",advice:"CBD olej v tomto BB kr\u00e9mu kr\u00e1sn\u011b zklid\u0148uje podr\u00e1\u017ed\u011bnou a citlivou ple\u0165. Z\u00e1rove\u0148 sjednocuje t\u00f3n pleti \u2013 takov\u00e1 lehk\u00e1 p\u00e9\u010de bez pocitu t\u011b\u017ek\u00e9ho make-upu."},
+    {id:"caviar",n:"Caviar Long Stay Make-up",s:"Dlouhotrvaj\u00edc\u00ed s kavi\u00e1rem",p:299,r:4.6,rc:29,c:"make-upy",t:["LONG STAY"],d:"Luxusn\u00ed dlouhotrvaj\u00edc\u00ed make-up s kavi\u00e1rem.",sk:"V\u0161echny typy pleti",img:"data:image/jpeg;base64,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",advice:"Luxusn\u00ed make-up s kavi\u00e1rov\u00fdm extraktem \u2013 ple\u0165 je po n\u011bm hebk\u00e1 jako sat\u00e9n. Vydr\u017e\u00ed cel\u00fd den d\u00edky formuli Long Stay. Pokud hled\u00e1te n\u011bco speci\u00e1ln\u00edho, tohle je volba."},
+    {id:"infinity",n:"Infinity Make-up & Korektor",s:"Make-up s korektorem 2v1",p:349,r:4.4,rc:22,c:"make-upy",t:["2v1"],d:"Praktick\u00e1 kombinace make-upu a korektoru.",sk:"V\u0161echny typy pleti",img:"data:image/jpeg;base64,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",advice:"Praktick\u00e1 2v1 kombinace \u2013 na jedn\u00e9 stran\u011b make-up, na druh\u00e9 korektor. U\u0161et\u0159\u00edte \u010das i m\u00edsto v kosmetick\u00e9 ta\u0161ti\u010dce. Super na cesty nebo do kabelky."},
+    {id:"skin-tint",n:"Skin Tint",s:"Lehk\u00fd make-up v ty\u010dince",p:299,r:4.3,rc:15,c:"make-upy",t:["NOVINKA"],d:"Lehk\u00fd t\u00f3novac\u00ed hydrata\u010dn\u00ed make-up v ty\u010dince.",sk:"Norm\u00e1ln\u00ed ple\u0165",img:"data:image/jpeg;base64,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",advice:"Novinka v ty\u010dince! Sta\u010d\u00ed p\u0159ejet po tv\u00e1\u0159i a m\u00e1te hotovo \u2013 lehk\u00e9 krit\u00ed s hydrata\u010dn\u00edm efektem. Ide\u00e1ln\u00ed na ka\u017edodenn\u00ed p\u0159irozen\u00fd look, kdy\u017e nechcete t\u011b\u017ek\u00fd make-up."}
+  ];
+
+  var FAQ = [
+    {c:"Objedn\u00e1vky",items:[
+      {q:"Jak mohu objednat?",a:"P\u0159\u00edmo na dermacol.cz \u2013 vyberte produkty, p\u0159idejte do ko\u0161\u00edku a dokon\u010dete objedn\u00e1vku."},
+      {q:"Zp\u016fsoby platby?",a:"Dob\u00edrka, bankovn\u00ed p\u0159evod a platebn\u00ed karta online (VISA, Mastercard) se 3D-Secure."},
+      {q:"D\u00e1rkov\u00fd poukaz online?",a:"Ano, zadejte k\u00f3d do pole slevov\u00fd k\u00f3d p\u0159i checkout."}
+    ]},
+    {c:"Doprava",items:[
+      {q:"Doba doru\u010den\u00ed?",a:"Expedice do 2 pracovn\u00edch dn\u016f. Z\u00e1silkovna nebo DPD."},
+      {q:"Cena dopravy?",a:"Zobraz\u00ed se p\u0159i checkout podle zvolen\u00e9ho dopravce."}
+    ]},
+    {c:"Vr\u00e1cen\u00ed",items:[
+      {q:"Jak vr\u00e1tit zbo\u017e\u00ed?",a:"Do 14 dn\u016f, neotev\u0159en\u00e9. Otev\u0159enou kosmetiku nelze vr\u00e1tit."},
+      {q:"Reklamace?",a:"reklamace@dermacol.cz \u2013 vy\u0159\u00edzen\u00ed do 30 dn\u016f."}
+    ]},
+    {c:"Produkty",items:[
+      {q:"Testujete na zv\u00ed\u0159atech?",a:"Ne! Spl\u0148ujeme EU legislativu od 2004. Testujeme na lidsk\u00fdch dobrovoln\u00edc\u00edch."},
+      {q:"Jsou produkty hypoalergenn\u00ed?",a:"Ano, v\u0161echny Dermacol produkty jsou hypoalergenn\u00ed."},
+      {q:"Active \u0159ada p\u0159i kojen\u00ed?",a:"Ano, kosmetika je bezpe\u010dn\u00e1 pro t\u011bhotn\u00e9 i koj\u00edc\u00ed \u017eeny."}
+    ]}
+  ];
+
+  var CAT_ADVICE = {
+    "make-upy": "Skv\u011bl\u00e1 volba! Make-upy jsou n\u00e1\u0161 z\u00e1klad. Jak\u00fd typ pleti m\u00e1te? Podle toho v\u00e1m doporu\u010d\u00edm ten prav\u00fd odst\u00edn a slo\u017een\u00ed.",
+    "bb-kremy": "BB kr\u00e9my jsou ide\u00e1ln\u00ed pro p\u0159irozen\u00fd look. Chcete sp\u00ed\u0161e hydrataci, nebo zklid\u0148uj\u00edc\u00ed \u00fa\u010dinky?",
+    "baze": "B\u00e1ze pod make-up prodlou\u017e\u00ed v\u00fddr\u017e l\u00ed\u010den\u00ed. M\u00e1te mastnou, suchou, nebo sm\u00ed\u0161enou ple\u0165?",
+    "pudry": "Pudry zafixuj\u00ed make-up a matuj\u00ed. Preferujete sypk\u00fd, kompaktn\u00ed, nebo transparentn\u00ed pudr?",
+    "tvarenky": "Tv\u00e1\u0159enky dod\u00e1vaj\u00ed zdrav\u00fd n\u00e1dech. Preferujete p\u0159irozen\u00e9 r\u016f\u017eov\u00e9, broskvov\u00e9, nebo v\u00fdrazn\u011bj\u0161\u00ed t\u00f3ny?",
+    "korektory": "Korektory jsou z\u00e1klad pro bezchybn\u00fd look. Co pot\u0159ebujete zakr\u00fdt \u2013 kruhy pod o\u010dima, zarudnut\u00ed, nebo nedokonalosti?",
+    "fixace": "Fixace make-upu je kl\u00ed\u010d k celodenn\u00ed v\u00fddr\u017ei. Preferujete sprej, nebo pudr?",
+    "rasenky": "\u0158asenky jsou nej\u017e\u00e1dan\u011bj\u0161\u00ed produkt! Jak\u00fd efekt hled\u00e1te \u2013 objem, prodlou\u017een\u00ed, nebo vod\u011bodolnost?",
+    "ocni-stiny": "O\u010dn\u00ed st\u00edny nab\u00edz\u00edme v paletkach i jednotliv\u011b. Jak\u00e9 t\u00f3ny preferujete \u2013 neutr\u00e1ln\u00ed, teplou, nebo v\u00fdraznou paletu?",
+    "ocni-linky": "O\u010dn\u00ed linky definuj\u00ed pohled. Chcete gelovou, tu\u017ekovou, nebo p\u0159esnou fixku?",
+    "oboci": "P\u00e9\u010de o obo\u010d\u00ed je z\u00e1klad. Hled\u00e1te tu\u017eku, \u0159asenku na obo\u010d\u00ed, nebo gel?",
+    "rtenky": "Rt\u011bnky jsou na\u0161e specialita! Jak\u00fd fini\u0161 preferujete \u2013 matov\u00fd, kl\u00e1sicky lesklou, nebo sat\u00e9nov\u00fd?",
+    "lesky": "Lesky na rty dod\u00e1vaj\u00ed objem a \u017e\u00e1r. Preferujete transparentn\u00ed, barevn\u00fd, nebo s t\u0159pytkami?",
+    "balzamy": "Balz\u00e1my na rty jsou z\u00e1klad p\u00e9\u010de. Na\u0161e \u0159ada Imperial Rose s r\u016f\u017eov\u00fdm olejem je fantastick\u00e1!",
+    "konturovaci": "Konturovac\u00ed tu\u017eky definuj\u00ed l\u00ednii rt\u016f. Jak\u00fd odst\u00edn hled\u00e1te?",
+    "laky": "Laky na nehty m\u00e1me v desitk\u00e1ch odst\u00edn\u016f. Jak\u00e1 barva v\u00e1s zaj\u00edm\u00e1?",
+    "pece-n": "P\u00e9\u010de o nehty je d\u016fle\u017eit\u00e1. Hled\u00e1te zpev\u0148uj\u00edc\u00ed lak, olejov\u00fd s\u00e9rum, nebo kr\u00e9m na ku\u017ei\u010dku?",
+    "denni": "Denn\u00ed kr\u00e9my jsou z\u00e1klad rutiny. Jak\u00fd typ pleti m\u00e1te \u2013 suchou, mastnou, sm\u00ed\u0161enou, nebo citlivou?",
+    "nocni": "No\u010dn\u00ed kr\u00e9my regeneruj\u00ed ple\u0165 p\u0159es noc. Zaj\u00edm\u00e1 v\u00e1s sp\u00ed\u0161e hydratace, anti-age, nebo zklid\u0148uj\u00edc\u00ed \u00fa\u010dinky?",
+    "ocni": "O\u010dn\u00ed kr\u00e9my o\u0161et\u0159uj\u00ed jemnou poko\u017eku kolem o\u010d\u00ed. Pot\u0159ebujete \u0159e\u0161it kruhy, v\u00e1\u010dky, nebo vr\u00e1sky?",
+    "mleka": "\u010cistic\u00ed ml\u00e9ka jsou ide\u00e1ln\u00ed pro suchou a citlivou ple\u0165. Chcete i odl\u00ed\u010den\u00ed o\u010d\u00ed?",
+    "micelarni": "Micel\u00e1rn\u00ed vody \u0161etrn\u011b odstra\u0148uj\u00ed make-up. Preferujete pro citlivou ple\u0165, nebo univerzaln\u00ed?",
+    "gely": "\u010cistic\u00ed gely jsou skv\u011bl\u00e9 pro mastnou a sm\u00ed\u0161enou ple\u0165. Hled\u00e1te hloubkov\u00e9 \u010di\u0161t\u011bn\u00ed?",
+    "peelingy": "Peelingy odstra\u0148uj\u00ed odumn\u0159el\u00e9 bu\u0148ky. Preferujete enzymatick\u00fd, mechanick\u00fd, nebo chemick\u00fd?",
+    "sera": "S\u00e9ra jsou intenzivn\u00ed p\u00e9\u010de. Co pot\u0159ebuje va\u0161e ple\u0165 \u2013 hydrataci, anti-age, rozjasn\u011bn\u00ed?",
+    "masky": "Masky jsou ritu\u00e1l p\u00e9\u010de. Hled\u00e1te hydrata\u010dn\u00ed, \u010distic\u00ed, nebo anti-age masku?",
+    "opalovani": "Ochrana p\u0159ed sluncem je z\u00e1klad! Jak\u00fd SPF faktor preferujete a pro jakou oblast \u2013 tv\u00e1\u0159, t\u011blo?",
+    "telove-kremy": "T\u011blov\u00e9 kr\u00e9my hydratuj\u00ed a vy\u017eivuj\u00ed. Preferujete lehkou texturu, nebo bohat\u00e9 maslo?",
+    "sprchove-gely": "Sprchov\u00e9 gely m\u00e1me v kr\u00e1sn\u00fdch v\u016fn\u00edch. Jak\u00e1 v\u016fn\u011b v\u00e1m vyhovuje?",
+    "kremy-ruce": "Kr\u00e9my na ruce chr\u00e1n\u00ed a hydratuj\u00ed. Pot\u0159ebujete intenzivn\u00ed, nebo lehkou p\u00e9\u010di?",
+    "pece-nohy": "P\u00e9\u010de o nohy je d\u016fle\u017eit\u00e1. Hled\u00e1te zm\u011bk\u010duj\u00edc\u00ed kr\u00e9m, peeling, nebo chladiv\u00fd gel?",
+    "sampony": "\u0160ampony m\u00e1me pro ka\u017ed\u00fd typ vlas\u016f. Jak\u00e9 m\u00e1te vlasy \u2013 such\u00e9, mastn\u00e9, barven\u00e9, jemn\u00e9?",
+    "kondicionery": "Kondicion\u00e9ry dod\u00e1vaj\u00ed hebkost. Pot\u0159ebujete sp\u00ed\u0161e hydrataci, objem, nebo opravu?",
+    "masky-vl": "Masky na vlasy jsou intenzivn\u00ed p\u00e9\u010de. Jak\u00fd probl\u00e9m chcete \u0159e\u0161it?",
+    "sera-vl": "S\u00e9ra na vlasy dod\u00e1vaj\u00ed lesk a chr\u00e1n\u00ed kone\u010dky. Jak\u00e9 m\u00e1te vlasy?",
+    "damske": "D\u00e1msk\u00e9 parf\u00e9my Dermacol nab\u00edz\u00edme v kv\u011btinov\u00fdch, ovocn\u00fdch i orient\u00e1ln\u00edch t\u00f3nech. Jak\u00e9 v\u016fn\u011b preferujete?",
+    "panske": "P\u00e1nsk\u00e9 parf\u00e9my m\u00e1me d\u0159evit\u00e9, \u010derstv\u00e9 i ko\u0159en\u011bn\u00e9. Pro koho vyb\u00edr\u00e1te?",
+    "difuzery": "Difuz\u00e9ry kr\u00e1sn\u011b provon\u00ed v\u00e1\u0161 domov. Jak\u00e1 v\u016fn\u011b se v\u00e1m l\u00edb\u00ed \u2013 kv\u011btinov\u00e1, d\u0159evit\u00e1, \u010derstv\u00e1?",
+    "svicky": "Vonn\u00e9 sv\u00ed\u010dky vytvo\u0159\u00ed skvělou atmosf\u00e9ru. Preferujete relaxa\u010dn\u00ed, romantick\u00e9, nebo energick\u00e9 v\u016fn\u011b?"
+  };
+
+  var msgsEl = document.getElementById("msgs");
+  var inpEl = document.getElementById("inp");
+  var sendEl = document.getElementById("sendBtn");
+  var treePath = [];
+
+  function scrollDown() {
+    setTimeout(function() { msgsEl.scrollTop = msgsEl.scrollHeight; }, 60);
+  }
+
+  function fmt(t) {
+    return t.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>").replace(/\n/g, "<br>");
+  }
+
+  function prodWord(n) {
+    if (n === 1) return "produkt";
+    if (n >= 2 && n <= 4) return "produkty";
+    return "produkt\u016f";
+  }
+
+  function addBot(html, extFn) {
+    var row = document.createElement("div");
+    row.className = "m bot";
+    row.innerHTML = '<div class="m-ava">D</div><div class="m-body"><div class="bub">' + fmt(html) + "</div></div>";
+    if (extFn) { extFn(row.querySelector(".m-body")); }
+    msgsEl.appendChild(row);
+    scrollDown();
+  }
+
+  function addUsr(txt) {
+    var row = document.createElement("div");
+    row.className = "m usr";
+    row.innerHTML = '<div class="m-ava">?</div><div class="m-body"><div class="bub"></div></div>';
+    row.querySelector(".bub").textContent = txt;
+    msgsEl.appendChild(row);
+    scrollDown();
+  }
+
+  function showTyping() {
+    var row = document.createElement("div");
+    row.className = "m bot";
+    row.id = "typing";
+    row.innerHTML = '<div class="m-ava">D</div><div class="m-body"><div class="bub"><div class="dots"><span></span><span></span><span></span></div></div></div>';
+    msgsEl.appendChild(row);
+    scrollDown();
+  }
+
+  function hideTyping() {
+    var el = document.getElementById("typing");
+    if (el) { el.parentNode.removeChild(el); }
+  }
+
+  function botReply(html, extFn) {
+    showTyping();
+    var delay = Math.min(500 + (html || "").length * 2, 1400);
+    setTimeout(function() {
+      hideTyping();
+      addBot(html, extFn);
+      inpEl.disabled = false;
+      sendEl.disabled = false;
+      inpEl.focus();
+    }, delay);
+  }
+
+  function addActions(parent) {
+    var d = document.createElement("div");
+    d.className = "acts";
+    var items = [["Proch\u00e1zet kategorie","browse"],["Poradna pro ple\u0165","skin"],["Bestsellery","best"],["\u010cast\u00e9 dotazy","faq"]];
+    for (var i = 0; i < items.length; i++) {
+      (function(x) {
+        var b = document.createElement("button");
+        b.className = "abtn";
+        b.textContent = x[0];
+        b.addEventListener("click", function() { doAction(x[1]); });
+        d.appendChild(b);
+      })(items[i]);
+    }
+    parent.appendChild(d);
+  }
+
+  function addProduct(parent, p) {
+    var card = document.createElement("div");
+    card.className = "pc";
+    card.addEventListener("click", function() { window.open("https://www.dermacol.cz/" + p.id + "/", "_blank"); });
+    var tagH = (p.t && p.t[0]) ? '<span class="tag">' + p.t[0] + "</span>" : "";
+    var imgUrl = p.img || "";
+    var imgEl = imgUrl.indexOf("http") === 0 ? '<div class="pc-img"><img src="' + imgUrl + '" alt="' + p.n + '" onerror="this.parentElement.style.background=\'linear-gradient(135deg,#E91E8C,#FF6BB5)\';this.parentElement.textContent=\'' + (p.n.charAt(0) || "D") + '\';this.remove();" /></div>' : '<div class="pc-img" style="background:linear-gradient(135deg,#E91E8C,#FF6BB5);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:0.7rem">' + (imgUrl || "D") + '</div>';
+    var adviceH = p.advice ? '<div class="pc-desc">' + p.advice + '</div>' : '';
+    card.innerHTML = imgEl + '<div class="pc-info"><div class="pc-name">' + p.n + tagH + '</div><div class="pc-sub">' + p.s + '</div>' + adviceH + '<div class="pc-bot"><span class="pc-price">' + p.p + ' K\u010d</span><span class="pc-rate">\u2605 ' + p.r + " (" + p.rc + ")</span></div></div>";
+    parent.appendChild(card);
+  }
+
+  function addTip(parent, title, text) {
+    var t = document.createElement("div");
+    t.className = "tip";
+    t.innerHTML = '<div class="tip-t">' + title + "</div>" + text;
+    parent.appendChild(t);
+  }
+
+  function findCat(list, id) {
+    for (var i = 0; i < list.length; i++) {
+      if (list[i].id === id) { return list[i]; }
+    }
+    return null;
+  }
+
+  function addTree(parent, items, path) {
+    var nav = document.createElement("div");
+    if (path.length > 0) {
+      var cr = document.createElement("div");
+      cr.className = "crumb";
+      var s0 = document.createElement("span");
+      s0.textContent = "Kategorie";
+      s0.addEventListener("click", function() { rebuildTree(parent, 0); });
+      cr.appendChild(s0);
+      var cur = CATS;
+      for (var i = 0; i < path.length; i++) {
+        cr.appendChild(document.createTextNode(" > "));
+        var found = findCat(cur, path[i]);
+        if (found) {
+          var sp = document.createElement("span");
+          sp.textContent = found.n;
+          (function(idx) { sp.addEventListener("click", function() { rebuildTree(parent, idx + 1); }); })(i);
+          cr.appendChild(sp);
+          cur = found.ch || [];
+        }
+      }
+      nav.appendChild(cr);
+    }
+    for (var j = 0; j < items.length; j++) {
+      (function(cat) {
+        var ti = document.createElement("div");
+        ti.className = "ti";
+        var left = '<div class="ti-l"><span class="ti-i">' + (cat.i || "\uD83D\uDC8E") + "</span><div><div class='ti-n'>" + cat.n + "</div>" + (cat.d ? "<div class='ti-d'>" + cat.d + "</div>" : "") + "</div></div>";
+        ti.innerHTML = left + (cat.ch ? '<span class="ti-a">&gt;</span>' : "");
+        ti.addEventListener("click", function() { clickTree(parent, cat); });
+        nav.appendChild(ti);
+      })(items[j]);
+    }
+    parent.appendChild(nav);
+  }
+
+  function rebuildTree(parent, level) {
+    treePath = treePath.slice(0, level);
+    while (parent.children.length > 1) { parent.removeChild(parent.lastChild); }
+    var items = CATS;
+    for (var i = 0; i < treePath.length; i++) {
+      var f = findCat(items, treePath[i]);
+      if (f && f.ch) { items = f.ch; }
+    }
+    addTree(parent, items, treePath);
+    scrollDown();
+  }
+
+  function clickTree(parent, cat) {
+    if (cat.ch) {
+      treePath.push(cat.id);
+      while (parent.children.length > 1) { parent.removeChild(parent.lastChild); }
+      var items = CATS;
+      for (var i = 0; i < treePath.length; i++) {
+        var f = findCat(items, treePath[i]);
+        if (f && f.ch) { items = f.ch; }
+      }
+      addTree(parent, items, treePath);
+      scrollDown();
+    } else {
+      var found = [];
+      for (var j = 0; j < PRODS.length; j++) {
+        if (PRODS[j].c === cat.id) { found.push(PRODS[j]); }
+      }
+      if (found.length > 0) {
+        var countText = "Na\u0161la jsem " + found.length + " " + prodWord(found.length) + " v kategorii **" + cat.n + "**:";
+        botReply(countText, function(body) {
+          for (var k = 0; k < found.length; k++) { addProduct(body, found[k]); }
+          addTip(body, "Pot\u0159ebujete poradit?", "Napi\u0161te mi v\u00e1\u0161 typ pleti nebo p\u0159\u00edle\u017eitost a j\u00e1 v\u00e1m doporu\u010d\u00edm ten nejlep\u0161\u00ed produkt!");
+        });
+      } else {
+        var advice = CAT_ADVICE[cat.id] || "R\u00e1da v\u00e1m porad\u00edm s v\u00fdb\u011brem v kategorii **" + cat.n + "**. Co p\u0159esn\u011b hled\u00e1te?";
+        botReply(advice, function(body) {
+          var acts = document.createElement("div");
+          acts.className = "acts";
+          var opts = [["Napi\u0161te mi v\u00edce","info_" + cat.id],["Zobrazit v\u0161e na webu","web_" + cat.id]];
+          for (var i = 0; i < opts.length; i++) {
+            (function(x) {
+              var b = document.createElement("button");
+              b.className = "abtn";
+              b.textContent = x[0];
+              b.addEventListener("click", function() {
+                if (x[1].indexOf("web_") === 0) {
+                  window.open("https://www.dermacol.cz/kategorie/" + cat.id + "/", "_blank");
+                } else {
+                  addUsr("Chci v\u011bd\u011bt v\u00edce o " + cat.n);
+                  botReply("Kompletni nab\u00eddku kategorie **" + cat.n + "** najdete na dermacol.cz. R\u00e1da v\u00e1m ale porad\u00edm \u2013 napi\u0161te mi, co hled\u00e1te, jak\u00fd m\u00e1te typ pleti, nebo pro jakou p\u0159\u00edle\u017eitost produkt pot\u0159ebujete.", addActions);
+                }
+              });
+              acts.appendChild(b);
+            })(opts[i]);
+          }
+          body.appendChild(acts);
+        });
+      }
+    }
+  }
+
+  function addFAQ(parent) {
+    for (var i = 0; i < FAQ.length; i++) {
+      var cat = FAQ[i];
+      var h = document.createElement("div");
+      h.className = "faq-cat";
+      h.textContent = cat.c;
+      parent.appendChild(h);
+      for (var j = 0; j < cat.items.length; j++) {
+        (function(item) {
+          var fi = document.createElement("div");
+          fi.className = "faq-i";
+          var ans = document.createElement("div");
+          ans.className = "faq-ans";
+          ans.textContent = item.a;
+          var q = document.createElement("button");
+          q.className = "faq-q";
+          q.innerHTML = "<span>" + item.q + "</span><span>+</span>";
+          q.addEventListener("click", function() {
+            var isOpen = ans.style.display === "block";
+            ans.style.display = isOpen ? "none" : "block";
+            q.querySelector("span:last-child").textContent = isOpen ? "+" : "-";
+          });
+          fi.appendChild(q);
+          fi.appendChild(ans);
+          parent.appendChild(fi);
+        })(cat.items[j]);
+      }
+    }
+  }
+
+  function doAction(act) {
+    if (act === "browse") {
+      treePath = [];
+      inTreeMode = true;
+      botReply("Kategorie produkt\u016f Dermacol. Klikn\u011bte pro proch\u00e1zen\u00ed:", function(body) {
+        addTree(body, CATS, []);
+      });
+    } else if (act === "skin") {
+      addUsr("Porad\u00edte mi s p\u00e9\u010d\u00ed o ple\u0165?");
+      botReply("R\u00e1da porad\u00edm! Jak\u00fd **typ pleti** m\u00e1te?", function(body) {
+        var acts = document.createElement("div");
+        acts.className = "acts";
+        var skinTypes = [["Mastn\u00e1 ple\u0165","mastn\u00e1 ple\u0165"],["Such\u00e1 ple\u0165","such\u00e1 ple\u0165"],["Zral\u00e1 ple\u0165","zral\u00e1 ple\u0165"],["Citliv\u00e1 ple\u0165","citliv\u00e1 ple\u0165"]];
+        for (var i = 0; i < skinTypes.length; i++) {
+          (function(x) {
+            var b = document.createElement("button");
+            b.className = "abtn";
+            b.textContent = x[0];
+            b.addEventListener("click", function() { addUsr(x[0]); processInput(x[1]); });
+            acts.appendChild(b);
+          })(skinTypes[i]);
+        }
+        body.appendChild(acts);
+      });
+    } else if (act === "best") {
+      addUsr("Uka\u017ete mi bestsellery");
+      var bests = [];
+      for (var i = 0; i < PRODS.length; i++) {
+        if (PRODS[i].t.indexOf("BESTSELLER") >= 0) { bests.push(PRODS[i]); }
+      }
+      botReply("Na\u0161e nejoblíben\u011bj\u0161\u00ed produkty:", function(body) {
+        for (var j = 0; j < bests.length; j++) { addProduct(body, bests[j]); }
+      });
+    } else if (act === "faq") {
+      botReply("Nej\u010dast\u011bj\u0161\u00ed dotazy:", function(body) { addFAQ(body); });
+    }
+  }
+
+  function findProds(q) {
+    q = q.toLowerCase();
+    var result = [];
+    for (var i = 0; i < PRODS.length; i++) {
+      var p = PRODS[i];
+      var s = (p.n + " " + p.s + " " + p.d + " " + p.c + " " + (p.sk || "") + " " + p.t.join(" ")).toLowerCase();
+      var words = q.split(/\s+/);
+      for (var w = 0; w < words.length; w++) {
+        if (words[w].length > 2 && s.indexOf(words[w]) >= 0) {
+          result.push(p);
+          break;
+        }
+      }
+    }
+    return result;
+  }
+
+  function normalize(s) {
+    return s.replace(/[\-\s]+/g, "").replace(/\u00e1/g,"a").replace(/\u010d/g,"c").replace(/\u010f/g,"d").replace(/\u00e9/g,"e").replace(/\u011b/g,"e").replace(/\u00ed/g,"i").replace(/\u0148/g,"n").replace(/\u00f3/g,"o").replace(/\u0159/g,"r").replace(/\u0161/g,"s").replace(/\u0165/g,"t").replace(/\u00fa/g,"u").replace(/\u016f/g,"u").replace(/\u00fd/g,"y").replace(/\u017e/g,"z");
+  }
+
+  function processInput(q) {
+    var ql = q.toLowerCase().trim();
+    var qn = normalize(ql);
+
+    if (/^(ahoj|cau|\u010dau|dobr|zdravim|zdrav\u00edm|hej|hi|hello)/.test(ql))
+      return botReply("Ahoj! Jsem va\u0161e beauty poradkyn\u011b **Dermacol**. Jak v\u00e1m mohu pomoci?", addActions);
+
+    if (/make.?up.*cover|kryc|cover/.test(ql))
+      return botReply("N\u00e1\u0161 legend\u00e1rn\u00ed **Make-up Cover** je absolutn\u00ed bestseller! Vznikl v roce 1969 ve filmov\u00fdch studi\u00edch Barrandov. Je vod\u011bodolný s extr\u00e9mn\u00edm kryt\u00edm \u2013 zakryje i tetov\u00e1n\u00ed. M\u00e1 SPF 30 a 17 odst\u00edn\u016f.", function(b) { addProduct(b, PRODS[0]); addTip(b, "Beauty tip", "Pro nejlep\u0161\u00ed v\u00fdsledek naneste houbi\u010dkou v tenk\u00fdch vrstv\u00e1ch."); });
+
+    if (/make.?up|makeup|l\u00ed\u010den|licen|foundation|podklad/.test(ql) || /potrebuj.*makeup|chci.*makeup|hledam.*makeup/.test(qn))
+      return botReply("R\u00e1da v\u00e1m porad\u00edm s v\u00fdb\u011brem make-upu! M\u00e1me n\u011bkolik typ\u016f podle va\u0161ich pot\u0159eb. Jak\u00fd typ pleti m\u00e1te?", function(b) {
+        var makeups = [];
+        for (var i = 0; i < PRODS.length; i++) { if (PRODS[i].c === "make-upy") makeups.push(PRODS[i]); }
+        for (var j = 0; j < Math.min(makeups.length, 4); j++) { addProduct(b, makeups[j]); }
+        var acts = document.createElement("div"); acts.className = "acts";
+        var skinTypes = [["Mastn\u00e1 ple\u0165","mastn\u00e1 ple\u0165"],["Such\u00e1 ple\u0165","such\u00e1 ple\u0165"],["Zral\u00e1 ple\u0165","zral\u00e1 ple\u0165"],["Citliv\u00e1 ple\u0165","citliv\u00e1 ple\u0165"]];
+        for (var k = 0; k < skinTypes.length; k++) {
+          (function(x) { var btn = document.createElement("button"); btn.className = "abtn"; btn.textContent = x[0]; btn.addEventListener("click", function() { addUsr(x[0]); processInput(x[1]); }); acts.appendChild(btn); })(skinTypes[k]);
+        }
+        b.appendChild(acts);
+      });
+
+    if (/mastn|lesk|p\u00f3ry|akn[eé]|aknoz/.test(ql))
+      return botReply("Pro **mastnou ple\u0165** doporu\u010duji lehk\u00e9 formule, kter\u00e9 nekomplikuj\u00ed situaci s p\u00f3ry:", function(b) { addProduct(b, PRODS[5]); addProduct(b, PRODS[6]); addTip(b, "P\u00e9\u010de o mastnou ple\u0165", "Pou\u017e\u00edvejte lehk\u00e9 make-upy a matuj\u00edc\u00ed pudry. \u010cist\u011bte gely, ne ml\u00e9ky."); });
+
+    if (/such|hydrat|vysu\u0161en|vysusene/.test(ql))
+      return botReply("Pro **suchou ple\u0165** je kl\u00ed\u010dov\u00e1 hydratace. Tyto produkty obsahuj\u00ed slo\u017eky, kter\u00e9 dr\u017e\u00ed vlhkost v pleti:", function(b) { addProduct(b, PRODS[2]); addProduct(b, PRODS[1]); addTip(b, "P\u00e9\u010de o suchou ple\u0165", "Zvolte make-upy s kyselinou hyaluronovou a bohat\u00e9 kr\u00e9my."); });
+
+    if (/zral|vr\u00e1sk|anti.?age|st\u00e1rn|starn|omlazen/.test(ql))
+      return botReply("Pro **zralou ple\u0165** m\u00e1m anti-age produkty s kolagenem, kter\u00e9 pomalu vypl\u0148uj\u00ed vr\u00e1sky:", function(b) { addProduct(b, PRODS[1]); addTip(b, "Anti-age p\u00e9\u010de", "Kolagen a kyselina hyaluronov\u00e1 jsou z\u00e1klad. SPF ochrana je prevence!"); });
+
+    if (/citliv|alerg|podr\u00e1\u017ed|podrazden|zarudl|atopi/.test(ql))
+      return botReply("Pro **citlivou ple\u0165** doporu\u010duji zklid\u0148uj\u00edc\u00ed produkty. Na\u0161e \u0159ada s CBD olejem je p\u0159\u00edmo stvo\u0159en\u00e1 pro citlivou poko\u017eku:", function(b) { addProduct(b, PRODS[6]); addTip(b, "Citliv\u00e1 ple\u0165", "V\u0161echny produkty Dermacol jsou hypoalergenn\u00ed. Zkuste \u0159adu s CBD olejem."); });
+
+    if (/ple\u0165|plet|skin|kozn|ko\u017en|poko\u017ek|typ pleti/.test(ql) && !/such|mastn|zral|citliv/.test(ql))
+      return botReply("R\u00e1da porad\u00edm s p\u00e9\u010d\u00ed o ple\u0165! Abych v\u00e1m doporu\u010dila to nejlep\u0161\u00ed, pot\u0159ebuji v\u011bd\u011bt v\u00e1\u0161 typ pleti:", function(b) {
+        var acts = document.createElement("div"); acts.className = "acts";
+        var st = [["Mastn\u00e1 ple\u0165","mastn\u00e1 ple\u0165"],["Such\u00e1 ple\u0165","such\u00e1 ple\u0165"],["Zral\u00e1 ple\u0165","zral\u00e1 ple\u0165"],["Citliv\u00e1 ple\u0165","citliv\u00e1 ple\u0165"]];
+        for (var i = 0; i < st.length; i++) { (function(x) { var btn = document.createElement("button"); btn.className = "abtn"; btn.textContent = x[0]; btn.addEventListener("click", function() { addUsr(x[0]); processInput(x[1]); }); acts.appendChild(btn); })(st[i]); }
+        b.appendChild(acts);
+      });
+
+    if (/cen|kolik sto|stoj|k\u010d/.test(ql)) {
+      var f = findProds(ql);
+      if (f.length > 0) return botReply("Tady jsou ceny:", function(b) { for (var i = 0; i < f.length; i++) { addProduct(b, f[i]); } });
+      return botReply("Ceny Dermacol se pohybuj\u00ed od **99 K\u010d** po **369 K\u010d**. Na\u0161e bestsellery:", function(b) { addProduct(b, PRODS[0]); addProduct(b, PRODS[2]); addProduct(b, PRODS[3]); });
+    }
+
+    if (/doprav|doru\u010den|z\u00e1silk|objedn|eshop|poslat/.test(ql))
+      return botReply("**Doprava:** Expedice do 2 pracovn\u00edch dn\u016f. Doru\u010dujeme p\u0159es **Z\u00e1silkovnu** a **DPD**. Platba dob\u00edrkou, p\u0159evodem nebo kartou (VISA, Mastercard) se 3D-Secure.");
+
+    if (/vr\u00e1tit|vr\u00e1cen|reklam|nespokoje|reklamac/.test(ql))
+      return botReply("**Vr\u00e1cen\u00ed:** Do **14 dn\u016f**, neotev\u0159en\u00e9. **Reklamace:** reklamace@dermacol.cz \u2013 do 30 dn\u016f.");
+
+    if (/zv\u00ed\u0159|testov|vegan|cruelty|bio/.test(ql))
+      return botReply("**Dermacol netestuje na zv\u00ed\u0159atech!** Spl\u0148ujeme EU legislativu od 2004. Testujeme na lidsk\u00fdch dobrovoln\u00edc\u00edch pod dohledem St\u00e1tn\u00edho zdravotn\u00edho \u00fastavu.");
+
+    if (/dermacol|zna\u010dk|histori|p\u0159\u00edb\u011bh|o n\u00e1s/.test(ql))
+      return botReply("**Dermacol** \u2013 legend\u00e1rn\u00ed \u010desk\u00e1 zna\u010dka od roku **1966** z filmov\u00fdch studi\u00ed Barrandov. P\u0159\u00edtomna v **58 zem\u00edch**. Rodinn\u00e1 firma, v\u00fdroba v Brn\u011b.", function(b) { addTip(b, "Hodnoty", "\u010cesk\u00e1 tradice \u2013 Klinicky testov\u00e1no \u2013 Hypoalergenn\u00ed \u2013 Cruelty-free \u2013 ISO certifikace"); });
+
+    if (/slo\u017een|inci|ingredient|paraben/.test(ql))
+      return botReply("Slo\u017een\u00ed (INCI) najdete u ka\u017ed\u00e9ho produktu na **dermacol.cz**. V\u0161echny produkty jsou hypoalergenn\u00ed a klinicky testovan\u00e9.");
+
+    if (/d\u00e1rek|d\u00e1rkov|narozenin|v\u00e1noce|poukaz|darcek|pro kamarad/.test(ql))
+      return botReply("M\u00e1me **d\u00e1rkov\u00e9 bal\u00ed\u010dky** a **poukazy** (500 K\u010d, 1000 K\u010d). Nejoblíben\u011bj\u0161\u00ed d\u00e1rek? **Make-up Cover** \u2013 nikdy nezklame!", function(b) { addProduct(b, PRODS[0]); });
+
+    if (/svat|svatebn|ples|ve\u010de|gala|b\u00e1l|slavnost|maturitn/.test(ql))
+      return botReply("Pro **slavnostn\u00ed p\u0159\u00edle\u017eitost** doporu\u010duji vod\u011bodolné produkty, kter\u00e9 vydr\u017e\u00ed cel\u00fd den:", function(b) { addProduct(b, PRODS[0]); addProduct(b, PRODS[7]); addTip(b, "Slavnostn\u00ed l\u00ed\u010den\u00ed", "Make-up Cover je vod\u011bodolný a vydr\u017e\u00ed cel\u00fd den. Nezapome\u0148te na fixaci!"); });
+
+    if (/\u0159asenk|mascara|rasenk/.test(ql))
+      return botReply("Dermacol m\u00e1 \u0161irokou nab\u00eddku \u0159asenek \u2013 od objemov\u00fdch po prodlu\u017eovac\u00ed a vod\u011bodolné. Celou kolekci najdete na **dermacol.cz**. Jak\u00fd efekt preferujete?");
+
+    if (/rt\u011bnk|lip|rtenk|barva na rty|lesk na rty/.test(ql))
+      return botReply("Rty jsou na\u0161e specialita! M\u00e1me dlouhotrvaj\u00edc\u00ed barvy i vy\u017eivuj\u00edc\u00ed oleje:", function(b) { addProduct(b, PRODS[3]); addProduct(b, PRODS[4]); });
+
+    if (/kr\u00e9m|krem|sera|s\u00e9rum|maska|peeling|\u010di\u0161t\u011bn/.test(ql))
+      return botReply("V na\u0161em sortimentu naleznete celou \u0159adu p\u00e9\u010de o ple\u0165 \u2013 kr\u00e9my, s\u00e9ra, masky i peelingy. Abych v\u00e1m doporu\u010dila to prav\u00e9, jak\u00fd m\u00e1te typ pleti?", function(b) {
+        var acts = document.createElement("div"); acts.className = "acts";
+        var st = [["Mastn\u00e1 ple\u0165","mastn\u00e1 ple\u0165"],["Such\u00e1 ple\u0165","such\u00e1 ple\u0165"],["Zral\u00e1 ple\u0165","zral\u00e1 ple\u0165"],["Citliv\u00e1 ple\u0165","citliv\u00e1 ple\u0165"]];
+        for (var i = 0; i < st.length; i++) { (function(x) { var btn = document.createElement("button"); btn.className = "abtn"; btn.textContent = x[0]; btn.addEventListener("click", function() { addUsr(x[0]); processInput(x[1]); }); acts.appendChild(btn); })(st[i]); }
+        b.appendChild(acts);
+      });
+
+    if (/v\u016fn|parfem|parf\u00e9m|parfum|sv\u00ed\u010dk|difuz/.test(ql))
+      return botReply("D\u00e1msk\u00e9 i p\u00e1nsk\u00e9 parf\u00e9my, vonn\u00e9 sv\u00ed\u010dky a difuz\u00e9ry \u2013 to v\u0161e najdete v na\u0161\u00ed nab\u00eddce. Jak\u00fd typ v\u016fn\u011b preferujete \u2013 kv\u011btinov\u00fd, ovocn\u00fd, nebo d\u0159evit\u00fd?");
+
+    if (/vlasy|\u0161ampon|sampon|kondicion|maska na vlasy/.test(ql))
+      return botReply("Pro vlasy nab\u00edz\u00edme \u0161ampony, kondicion\u00e9ry, masky i s\u00e9ra. Jak\u00e9 m\u00e1te vlasy \u2013 such\u00e9, mastn\u00e9, barven\u00e9, nebo jemn\u00e9?");
+
+    if (/t\u011blo|telov|sprchov|ruce|nohy|depilac/.test(ql))
+      return botReply("T\u011blov\u00e1 p\u00e9\u010de zahrnuje kr\u00e9my, sprchov\u00e9 gely, p\u00e9\u010di o ruce i nohy. Co v\u00e1s zaj\u00edm\u00e1 nejv\u00edc?");
+
+    if (/nehty|lak|manik|gel na nehty/.test(ql))
+      return botReply("Laky na nehty m\u00e1me v des\u00edtk\u00e1ch odst\u00edn\u016f, plus p\u00e9\u010di o nehty a ku\u017ei\u010dku. Jak\u00e1 barva v\u00e1s zaj\u00edm\u00e1, nebo hled\u00e1te sp\u00ed\u0161e zpev\u0148uj\u00edc\u00ed p\u00e9\u010di?");
+
+    if (/o\u010di|eye|st\u00edn|linka|oboc/.test(ql))
+      return botReply("Pro l\u00ed\u010den\u00ed o\u010d\u00ed nab\u00edz\u00edme \u0159asenky, o\u010dn\u00ed st\u00edny, linky i p\u00e9\u010di o obo\u010d\u00ed. Co p\u0159esn\u011b hled\u00e1te?");
+
+    if (/doporu\u010d|porad|pomoc|pot\u0159ebuj|hled\u00e1m|chci|cht\u011bla|rad/.test(ql))
+      return botReply("R\u00e1da porad\u00edm! \u0158ekn\u011bte mi v\u00edce \u2013 jak\u00fd produkt hled\u00e1te, pro jakou p\u0159\u00edle\u017eitost, nebo jak\u00fd m\u00e1te typ pleti? Podle toho v\u00e1m vyberu to nejlep\u0161\u00ed.", function(b) {
+        var acts = document.createElement("div"); acts.className = "acts";
+        var opts = [["Make-upy","make-up"],["P\u00e9\u010de o ple\u0165","p\u00e9\u010de o ple\u0165"],["Rt\u011bnky","rt\u011bnky"],["Bestsellery","best"]];
+        for (var i = 0; i < opts.length; i++) { (function(x) { var btn = document.createElement("button"); btn.className = "abtn"; btn.textContent = x[0]; btn.addEventListener("click", function() { if (x[1]==="best") { doAction("best"); } else { addUsr(x[0]); processInput(x[1]); } }); acts.appendChild(btn); })(opts[i]); }
+        b.appendChild(acts);
+      });
+
+    var f = findProds(ql);
+    if (f.length > 0) {
+      var shown = f.length;
+      var txt = "Na\u0161la jsem " + shown + " " + prodWord(shown) + ":";
+      return botReply(txt, function(b) { for (var i = 0; i < f.length; i++) { addProduct(b, f[i]); } });
+    }
+
+    for (var ci = 0; ci < FAQ.length; ci++) {
+      for (var fi = 0; fi < FAQ[ci].items.length; fi++) {
+        var item = FAQ[ci].items[fi];
+        var words = ql.split(/\s+/);
+        for (var wi = 0; wi < words.length; wi++) {
+          if (words[wi].length > 2 && item.q.toLowerCase().indexOf(words[wi]) >= 0) {
+            return botReply("**" + item.q + "**\n\n" + item.a);
+          }
+        }
+      }
+    }
+
+    return botReply("D\u00edky za dotaz! Mohu v\u00e1m poradit s v\u00fdb\u011brem make-upu, p\u00e9\u010d\u00ed o ple\u0165, rt\u011bnkami a dal\u0161\u00edm. Zkuste mi popsat, co hled\u00e1te, nebo si prohl\u00e9dn\u011bte kategorie.", addActions);
+  }
+
+  function callAI(msg, cb) {
+    if (!apiKey) { return cb(null); }
+    var sys = "Jsi \u017eensk\u00e1 beauty poradkyn\u011b Dermacol \u2013 \u010desk\u00e9 kosmetick\u00e9 zna\u010dky od 1966 z Barrandova. Pom\u00e1h\u00e1\u0161 s v\u00fdb\u011brem kosmetiky. Mluv \u010desky, p\u0159\u00e1telsky, v \u017eensk\u00e9m rod\u011b (na\u0161la jsem, doporu\u010dila bych), max 3-4 v\u011bty. V\u017edy pou\u017e\u00edvej diakritiku. Produkty: Make-up Cover (369 K\u010d, bestseller, SPF30), Collagen Make-up (299 K\u010d, anti-age), Hyaluron Make-up (249 K\u010d), 16H barva na rty (249 K\u010d), Acnecover (199 K\u010d, mastn\u00e1 ple\u0165), BB kr\u00e9m CBD (124 K\u010d, citliv\u00e1 ple\u0165), Caviar Make-up (299 K\u010d). Doprava: Z\u00e1silkovna/DPD, 2 dny. Vr\u00e1cen\u00ed: 14 dn\u016f. Kontakt: reklamace@dermacol.cz";
+    chatLog.push({role: "user", content: msg});
+
+    if (apiKey.indexOf("sk-ant-") === 0) {
+      fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: {"Content-Type": "application/json", "x-api-key": apiKey, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true"},
+        body: JSON.stringify({model: "claude-sonnet-4-20250514", max_tokens: 400, system: sys, messages: chatLog.slice(-10)})
+      }).then(function(r) { return r.json(); }).then(function(d) {
+        var t = (d.content && d.content[0]) ? d.content[0].text : null;
+        if (t) { chatLog.push({role: "assistant", content: t}); }
+        cb(t);
+      }).catch(function() { cb(null); });
+    } else if (apiKey.indexOf("sk-") === 0) {
+      fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: {"Content-Type": "application/json", "Authorization": "Bearer " + apiKey},
+        body: JSON.stringify({model: "gpt-4o-mini", messages: [{role: "system", content: sys}].concat(chatLog.slice(-10)), max_tokens: 400, temperature: 0.7})
+      }).then(function(r) { return r.json(); }).then(function(d) {
+        var t = (d.choices && d.choices[0]) ? d.choices[0].message.content : null;
+        if (t) { chatLog.push({role: "assistant", content: t}); }
+        cb(t);
+      }).catch(function() { cb(null); });
+    } else {
+      cb(null);
+    }
+  }
+
+  function send() {
+    var txt = inpEl.value.trim();
+    if (!txt) { return; }
+    inpEl.value = "";
+    inpEl.disabled = true;
+    sendEl.disabled = true;
+    addUsr(txt);
+
+    callAI(txt, function(aiReply) {
+      if (aiReply) {
+        var found = findProds(txt);
+        if (found.length > 0) {
+          botReply(aiReply, function(b) { for (var i = 0; i < found.length; i++) { addProduct(b, found[i]); } });
+        } else {
+          botReply(aiReply);
+        }
+      } else {
+        processInput(txt);
+      }
+    });
+  }
+
+  sendEl.addEventListener("click", send);
+  inpEl.addEventListener("keydown", function(e) { if (e.key === "Enter") { send(); } });
+
+  document.getElementById("tabChat").addEventListener("click", function() {
+    this.classList.add("on");
+    document.getElementById("tabTree").classList.remove("on");
+    if (inTreeMode) {
+      inTreeMode = false;
+      botReply("Jsem zp\u011bt! Jak v\u00e1m mohu pomoci?", addActions);
+    }
+  });
+  document.getElementById("tabTree").addEventListener("click", function() {
+    this.classList.add("on");
+    document.getElementById("tabChat").classList.remove("on");
+    doAction("browse");
+  });
+
+  setTimeout(function() {
+    addBot("Ahoj! Jsem va\u0161e beauty poradkyn\u011b **Dermacol**. R\u00e1da v\u00e1m pomohu s v\u00fdb\u011brem kosmetiky, porad\u00edm s p\u00e9\u010d\u00ed o ple\u0165 nebo odpov\u00edm na va\u0161e dotazy.\n\nJak v\u00e1m mohu pomoci?", addActions);
+  }, 400);
+
+});
+</script>
+</body>
+</html>
