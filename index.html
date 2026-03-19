@@ -497,8 +497,9 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 
   function botReply(html, extFn) {
-    showTyping();
-    var delay = Math.min(500 + (html || "").length * 2, 1400);
+    var alreadyTyping = !!document.getElementById("typing");
+    if (!alreadyTyping) { showTyping(); }
+    var delay = alreadyTyping ? 0 : Math.min(400 + (html || "").length * 2, 1200);
     setTimeout(function() {
       hideTyping();
       // Create message row with empty bubble
@@ -1033,6 +1034,7 @@ document.addEventListener("DOMContentLoaded", function() {
     inpEl.disabled = true;
     sendEl.disabled = true;
     addUsr(txt);
+    showTyping();
 
     callAI(txt, function(aiReply) {
       if (aiReply) {
