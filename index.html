@@ -273,6 +273,13 @@ document.addEventListener("DOMContentLoaded", function() {
   };
 
   var PRODS = [
+    {id:"dermacol-make-up-cover",n:"Make-up Cover - Voděodolný extrémně krycí make-up",s:"Legendární krycí make-up SPF30",p:369,r:4.7,rc:72,c:"Make-upy",tc:"Produkty na líčení",u:"https://www.dermacol.cz/dermacol-make-up-cover/",img:"https://www.dermacol.cz/data/cache/thumb_1920-1600-0/products/14829/1757426632/1107a_makeup-cover_c.207_ean_85953475-1757426632.jpg",t:["BESTSELLER"]},
+    {id:"collagen-make-up",n:"Collagen make-up",s:"Anti-age make-up s kolagenem",p:299,r:4.4,rc:50,c:"Make-upy",tc:"Produkty na líčení",u:"https://www.dermacol.cz/collagen-make-up/",img:"https://www.dermacol.cz/data/cache/thumb_1920-1600-0/products/14824/1725633254/1217-1220-collagen-make-up-04-1725633254.webp"},
+    {id:"hyaluron-make-up-and-serum",n:"Hyaluron make-up and sérum",s:"Hydratační make-up s kyselinou hyaluronovou",p:249,r:4.5,rc:35,c:"Make-upy",tc:"Produkty na líčení",u:"https://www.dermacol.cz/hyaluron-make-up-and-serum/",img:"https://www.dermacol.cz/data/cache/thumb_1920-1600-0/products/14860/1757423338/85978287_hyaluron-makeup-and-serum_nude_c.2-1757423339.webp"},
+    {id:"caviar-long-stay-make-up-and-corrector",n:"Caviar - Dlouhotrvající make-up a korektor",s:"Luxusní make-up s kaviárem",p:499,r:5.0,rc:45,c:"Make-upy",tc:"Produkty na líčení",u:"https://www.dermacol.cz/caviar-long-stay-make-up-and-corrector/",img:"https://www.dermacol.cz/data/cache/thumb_1920-1600-0/products/14821/1757426362/1251c_caviar-makeup-a-korektor_ean_-85950887-1757426363.webp"},
+    {id:"acnecover-make-up",n:"AcneCover Make-up na problematickou pleť",s:"Lehký make-up pro problematickou pleť",p:169,r:5.0,rc:8,c:"Make-upy",tc:"Produkty na líčení",u:"https://www.dermacol.cz/acnecover-make-up/",img:"https://www.dermacol.cz/data/cache/thumb_1920-1600-0/products/14808/1757427388/1222_acne-cover_ean_-85971387-1757427388.webp"},
+    {id:"skin-tint-lehky-hydratacni-make-up-v-tycince",n:"Stick Tint - Lehký hydratační make-up v tyčince",s:"Skin Tint tyčinka",p:249,r:4.5,rc:16,c:"Make-upy",tc:"Produkty na líčení",u:"https://www.dermacol.cz/skin-tint-lehky-hydratacni-make-up-v-tycince/",img:"https://www.dermacol.cz/data/cache/thumb_1920-1600-0/products/15232/1752158276/skin_tint_stick_c.02-1752158276.webp"},
+    {id:"bb-krem-s-cbd",n:"BB krém s CBD",s:"BB krém s 1% CBD a konopným olejem SPF15",p:124,r:5.0,rc:23,c:"BB krémy",tc:"Produkty na líčení",u:"https://www.dermacol.cz/bb-krem-s-cbd/",img:"https://www.dermacol.cz/data/cache/thumb_1920-1600-0/products/14816/1757427984/85971400_bb-cream-s-cbd_light-1757427984.webp"},
     {id:"dlouhotrvajici-lak-na-nehty-5-days-stay-c-02-sugar-sweet",n:"5Day Stay - Dlouhotrvající lak na nehty č.2 Sugar Sweet",s:"5 Day* Stay Longlasting Nail Polish",p:99,r:4.6,rc:21,c:"Laky na nehty",tc:"Produkty na líčení",u:"https://www.dermacol.cz/dlouhotrvajici-lak-na-nehty-5-days-stay-c-02-sugar-sweet/",img:"https://www.dermacol.cz/data/cache/thumb_1920-1600-0/products/14832/1727077998/2954_dlouhotrvajici-lak-na-nehty-5-days-stay_odstin-02-sugar-sweet_ean_85959224-1727077998.png"},
     {id:"dlouhotrvajici-lak-na-nehty-5-days-stay-c-03-secret-wish",n:"5Day Stay - Dlouhotrvající lak na nehty č.3 Secret Wish",s:"5 Day* Stay Longlasting Nail Polish",p:99,r:4.6,rc:21,c:"Laky na nehty",tc:"Produkty na líčení",u:"https://www.dermacol.cz/dlouhotrvajici-lak-na-nehty-5-days-stay-c-03-secret-wish/",img:"https://www.dermacol.cz/data/cache/thumb_1920-1600-0/products/14832/1727077999/2955_dlouhotrvajici-lak-na-nehty-5-days-stay_odstin-03-secret-wish_ean_85959231-1727077999.png"},
     {id:"dlouhotrvajici-lak-na-nehty-5-days-stay-c-04-nude-glam",n:"5Day Stay - Dlouhotrvající lak na nehty č.4 Nude Glam",s:"5 Day* Stay Longlasting Nail Polish",p:99,r:4.6,rc:21,c:"Laky na nehty",tc:"Produkty na líčení",u:"https://www.dermacol.cz/dlouhotrvajici-lak-na-nehty-5-days-stay-c-04-nude-glam/",img:"https://www.dermacol.cz/data/cache/thumb_1920-1600-0/products/14832/1727078000/2956_dlouhotrvajici-lak-na-nehty-5-days-stay_odstin-04-nude-glam_ean_85959248-1727078000.png"},
@@ -494,10 +501,62 @@ document.addEventListener("DOMContentLoaded", function() {
     var delay = Math.min(500 + (html || "").length * 2, 1400);
     setTimeout(function() {
       hideTyping();
-      addBot(html, extFn);
-      inpEl.disabled = false;
-      sendEl.disabled = false;
-      inpEl.focus();
+      // Create message row with empty bubble
+      var row = document.createElement("div");
+      row.className = "m bot";
+      row.innerHTML = '<div class="m-ava">D</div><div class="m-body"><div class="bub"></div></div>';
+      msgsEl.appendChild(row);
+      var bub = row.querySelector(".bub");
+      var fullHtml = fmt(html);
+      // Typewriter effect: reveal text character by character
+      var chars = fullHtml.split("");
+      var idx = 0;
+      var speed = Math.max(4, Math.min(12, 800 / chars.length));
+      var inTag = false;
+      function typeNext() {
+        if (idx >= chars.length) {
+          // Typing done — now show extensions (product cards) with stagger
+          if (extFn) {
+            var body = row.querySelector(".m-body");
+            var tempDiv = document.createElement("div");
+            extFn(tempDiv);
+            var children = Array.prototype.slice.call(tempDiv.children);
+            var ci = 0;
+            function showNextCard() {
+              if (ci < children.length) {
+                var card = children[ci];
+                card.style.opacity = "0";
+                card.style.transform = "translateY(8px)";
+                card.style.transition = "opacity 0.3s ease, transform 0.3s ease";
+                body.appendChild(card);
+                setTimeout(function() { card.style.opacity = "1"; card.style.transform = "translateY(0)"; }, 30);
+                ci++;
+                scrollDown();
+                setTimeout(showNextCard, 200);
+              }
+            }
+            setTimeout(showNextCard, 150);
+          }
+          inpEl.disabled = false;
+          sendEl.disabled = false;
+          inpEl.focus();
+          return;
+        }
+        // Skip through HTML tags instantly
+        var chunk = "";
+        while (idx < chars.length) {
+          var ch = chars[idx];
+          chunk += ch;
+          idx++;
+          if (ch === "<") { inTag = true; }
+          if (ch === ">") { inTag = false; continue; }
+          if (!inTag) { break; }
+        }
+        bub.innerHTML = fullHtml.substring(0, idx);
+        scrollDown();
+        setTimeout(typeNext, speed);
+      }
+      typeNext();
     }, delay);
   }
 
